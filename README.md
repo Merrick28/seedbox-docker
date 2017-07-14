@@ -26,25 +26,7 @@ Ce projet utilise les images suivantes :
 
 Traefik va également gérer automatiquement les certificats https pour les front end web.
 
-## Lancement
+# Documentation
 
-Fait un git clone 
-```
-git clone https://github.com/Merrick28/seedbox-docker.git
-cd seedbox-docker
-```
+Toute la documentation se trouve dans [le wiki](https://github.com/Merrick28/seedbox-docker/wiki)
 
-### Préparation des mots de passe
-
-Pour le premier utilisateur, lancer la commande
-```
-htpasswd -c passwd <mon_user>
-```
-Cela va créer le fichier passwd, et préparer un password chiffré
-
-### Modifier le fichier seedbox.sh
-
-Les variables à modifier sont :
-- BASE_URL : URL de base pour les services (par exemple seedbox.mondomaine.net)
-- ADMIN_URL : l'url d'administration (par exemple admin.mondomaine.net)
-- MAIL_ADDRESS : adresse mail de contact pour letsencrypt.
