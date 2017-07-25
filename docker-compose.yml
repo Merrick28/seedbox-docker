@@ -1,0 +1,49 @@
+version: '2'
+services:
+###################################
+#    TRAEFIK
+###################################
+
+  traefik:
+    image: traefik:latest
+    command: --web --docker --docker.domain=docker.localhost --logLevel=DEBUG --entryPoints='Name:https Address::443 TLS' --entryPoints='Name:http Address::80' --acme.entrypoint=https --acme=true --acme.domains="${BASE_URL}, ${ADMIN_URL}" --acme.email="${MAIL_ADDRESS}" --acme.ondemand=true acme.onhostrule=true --acme.storage=/certs/acme.json 
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /dev/null:/traefik.toml
+      - $PWD/config/traefik:/etc/traefik/acme
+      - $PWD/config/certs:/certs
+    labels:
+      - "traefik.backend=traefik"
+      - "traefik.frontend.rule=Host:${ADMIN_URL}"
+      - "traefik.backend.port=8080"
+      - "traefik.frontend.auth.basic=steph:${passwd_steph}"
+      - "traefik.frontend.entryPoints=https"   
+##########################################
+# Portainer 
+##########################################
+  portainer:
+    image: portainer/portainer
+    volumes: 
+      - /var/run/docker.sock:/var/run/docker.sock
+      - $PWD/config/portainer:/data
+    labels:
+      - "traefik.backend=portainer"
+      - "traefik.frontend.rule=Host:${ADMIN_URL};PathPrefixStrip:/portainer"
+      - "traefik.backend.port=9000"
+      - "traefik.frontend.entryPoints=https"    
+      
+###########################################
+# FTP
+###########################################
+  ftp:
+    image: stilliard/pure-ftpd:hardened
+    volumes: 
+      - $PWD/config/ftp:/etc/pure-ftp-passwd
+      - $PWD:/home/ftpusers
+    ports:
+      - "21:21"
+      - "30000-30009:30000-30009"
+

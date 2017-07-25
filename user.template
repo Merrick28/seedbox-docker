@@ -1,0 +1,50 @@
+version: '2'
+
+######################################
+#   RUTORRENT
+######################################
+# {{ user }}
+services:
+  rutorrent-{{ user }}:
+    image: xataz/rtorrent-rutorrent
+    ports:
+      - "45001:45001"
+    labels:
+      - "traefik.backend=rutorrent_{{ user }}"
+      - "traefik.frontend.rule=Host:${BASE_URL};PathPrefix:/{{ user }}_rutorrent"
+      - "traefik.backend.port=8080"
+      - "traefik.frontend.auth.basic={{ user }}:${passwd_{{ user }}}"
+      - "traefik.frontend.entryPoints=https"
+    environment:
+      - UID=${MYUID}
+      - GID=${MYGID}
+      - PORT_RTORRENT=45001
+      - WEBROOT=/{{ user }}_rutorrent
+    volumes:
+      - $PWD/{{ user }}/data:/data 
+      - $PWD/{{ user }}/config/torrent:/config
+    dns: 8.8.8.8
+
+###################################
+#    SICKRAGE
+###################################
+# Dans cette image, le répertoire /downloads
+# correspond aux répertoire des torrents
+  sickrage_{{ user }}:
+    image: xataz/sickrage
+    volumes: 
+      - $PWD/{{ user }}/data:/downloads
+      - $PWD/{{ user }}/config/sr:/config
+    environment:
+      - PGID=${MYGID}
+      - PUID=${MYUID}
+      - WEBROOT=/{{ user }}/sickrage
+    labels:
+      - "traefik.backend=sickrage"
+      - "traefik.frontend.rule=Host:${BASE_URL};PathPrefix:/{{ user }}/sickrage"
+      - "traefik.backend.port=8081"
+      - "traefik.frontend.auth.basic={{ user }}:${passwd_{{ user }}}" 
+      - "traefik.frontend.entryPoints=https"        
+    links:
+       - rutorrent-{{ user }}:rutorrent-{{ user }}
+
