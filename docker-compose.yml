@@ -13,8 +13,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /dev/null:/traefik.toml
-      - $PWD/config/traefik:/etc/traefik/acme
-      - $PWD/config/certs:/certs
+      - $CONFIG_DIR/traefik:/etc/traefik/acme
+      - $CONFIG_DIR/certs:/certs
     labels:
       - "traefik.backend=traefik"
       - "traefik.frontend.rule=Host:${ADMIN_URL}"
@@ -28,7 +28,7 @@ services:
     image: portainer/portainer
     volumes: 
       - /var/run/docker.sock:/var/run/docker.sock
-      - $PWD/config/portainer:/data
+      - $CONFIG_DIR/portainer:/data
     labels:
       - "traefik.backend=portainer"
       - "traefik.frontend.rule=Host:${ADMIN_URL};PathPrefixStrip:/portainer"
@@ -41,8 +41,8 @@ services:
   ftp:
     image: stilliard/pure-ftpd:hardened
     volumes: 
-      - $PWD/config/ftp:/etc/pure-ftp-passwd
-      - $PWD:/home/ftpusers
+      - $CONFIG_DIR/ftp:/etc/pure-ftp-passwd
+      - $DATA_DIR:/home/ftpusers
     ports:
       - "21:21"
       - "30000-30009:30000-30009"

@@ -17,7 +17,13 @@ export PASSWD_FILE=./passwd
 # Adresse mail de contact 
 # (pour les certificats letsencrypt)
 export MAIL_ADDRESS=stephane.dewitte@gmail.com
-
+# Dossier de configuration
+# Va recevoir la configuration de la seedbox 
+# Concerne la configuration globale (hors utilisateur)
+export CONFIG_DIR=/home/steph/config-seedbox
+# Dossier utilisateurs
+# Chaque utilisateur aura un dossier sous ce dossier
+export DATA_DIR=/home/steph/data-seedbox
 ##########################
 # Ne touchez à rien après cette ligne
 ##########################
