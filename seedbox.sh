@@ -139,7 +139,7 @@ do
 done
 #########################################
 # Avant de passer à la suite, on va
-# regarde s'il y a un admin
+# regarder s'il y a un admin
 if [ ! -f ${PASSWD_FILE} ]
 then
   create_admin
