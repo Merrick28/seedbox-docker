@@ -8,7 +8,7 @@ services:
   rutorrent-{{ user }}:
     image: xataz/rtorrent-rutorrent
     ports:
-      - "45001:45001"
+      - "{{ port }}:{{ port }}" #UserPort
     labels:
       - "traefik.backend=rutorrent_{{ user }}"
       - "traefik.frontend.rule=Host:${BASE_URL};PathPrefix:/{{ user }}_rutorrent"
@@ -18,11 +18,11 @@ services:
     environment:
       - UID=${MYUID}
       - GID=${MYGID}
-      - PORT_RTORRENT=45001
+      - PORT_RTORRENT={{ port }}
       - WEBROOT=/{{ user }}_rutorrent
     volumes:
-      - $PWD/{{ user }}/data:/data 
-      - $PWD/{{ user }}/config/torrent:/config
+      - $DATA_DIR/{{ user }}/data:/data 
+      - $DATA_DIR/{{ user }}/config/torrent:/config
     dns: 8.8.8.8
 
 ###################################
@@ -33,8 +33,8 @@ services:
   sickrage_{{ user }}:
     image: xataz/sickrage
     volumes: 
-      - $PWD/{{ user }}/data:/downloads
-      - $PWD/{{ user }}/config/sr:/config
+      - $DATA_DIR/{{ user }}/data:/downloads
+      - $DATA_DIR/{{ user }}/config/sr:/config
     environment:
       - PGID=${MYGID}
       - PUID=${MYUID}

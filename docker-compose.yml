@@ -46,4 +46,4 @@ services:
     ports:
       - "21:21"
       - "30000-30009:30000-30009"
-
+    container_name: "pure_ftp_seedbox"
