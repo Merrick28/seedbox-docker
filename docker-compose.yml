@@ -41,7 +41,7 @@ services:
   ftp:
     image: stilliard/pure-ftpd:hardened
     volumes: 
-      - $CONFIG_DIR/ftp:/etc/pure-ftp-passwd
+      - $CONFIG_DIR/ftp:/etc/pure-ftpd/passwd
       - $DATA_DIR:/home/ftpusers
     ports:
       - "21:21"

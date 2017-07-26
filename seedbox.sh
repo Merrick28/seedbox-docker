@@ -44,6 +44,23 @@ function usage {
   echo "./seedbox.sh --help => affiche l'aide"
   echo "./seedbox.sh --adduser toto => crée l'utilisateur toto"
 }
+function deluser() {
+  username=$1
+  # On commence par arrêter les services
+  echo "Arrêt des services"
+  docker-compose -f $username.yml down
+  echo "Suppression de l'utilisateur ftp"
+  docker exec -i pure_ftp_seedbox /bin/bash << EOC                                                                                                                       
+    pure-pw userdel $username
+EOC
+  echo "Suppression des fichiers de configuration"
+  rm -f $username.yml
+  echo "Suppression du fichier des mots de passe"
+  htpasswd -D passwd $username
+  echo "Suppression de l'utilisateur terminée"
+  echo "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+  echo "Les dossiers de l'utilisateur ont été conservés"
+}
 function adduser() {
   username=$1
   echo "Ajout de l'utilisateur $1"
@@ -82,10 +99,7 @@ function adduser() {
     docker exec -i pure_ftp_seedbox /bin/bash << EOF
 ( echo ${mypassword} ; echo ${mypassword} )|pure-pw useradd $username -f /etc/pure-ftpd/passwd/pureftpd.passwd -m -u ftpuser -d /home/ftpusers/$username/data 
 EOF
-  echo "Lancement des containers"
-  docker-compose -f $username.yml up -d
   fi
-
 }
 #######################################
 # Variables
@@ -98,7 +112,7 @@ do
   pass=$(echo $line | awk -F':' '{print $2}')
   export passwd_${user}=${pass}
 done
-OPTS=`getopt -o vhns: --long start,stop,restart,help,adduser: -n 'parse-options' -- "$@"`
+OPTS=`getopt -o vhns: --long start,stop,restart,help,adduser:,deluser: -n 'parse-options' -- "$@"`
 
 if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
 
@@ -134,9 +148,15 @@ while true ; do
       adduser $2
       exit 0
       ;;
+    --deluser)
+      echo "Suppression de l'utilisateur $2"
+      deluser $2
+      exit 0
+      ;;
       --) shift ; break ;;
       *) echo "Internal error!" ; exit 1 ;;
   esac
 done
 
+# On n'a passé aucun paramètre, on en déduit qu'il faut démarrer
 #start
