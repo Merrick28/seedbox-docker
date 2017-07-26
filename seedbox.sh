@@ -43,6 +43,7 @@ function usage {
   echo "./seedbox.sh --restart => redémarre la seedbox"
   echo "./seedbox.sh --help => affiche l'aide"
   echo "./seedbox.sh --adduser toto => crée l'utilisateur toto"
+  echo "./seedbox.sh --deluser toto => supprime l'utilisateur toto (sans confirmation, les données sont conservées)"
 }
 function deluser() {
   username=$1
@@ -56,7 +57,7 @@ EOC
   echo "Suppression des fichiers de configuration"
   rm -f $username.yml
   echo "Suppression du fichier des mots de passe"
-  htpasswd -D passwd $username
+  htpasswd -D ${PASSWD_FILE} $username
   echo "Suppression de l'utilisateur terminée"
   echo "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
   echo "Les dossiers de l'utilisateur ont été conservés"
@@ -76,7 +77,7 @@ function adduser() {
     echo "Entrez son password, suivi de entrée"
     read mypassword
     echo "Enregistrement du password"
-    htpasswd -b ./passwd $username $mypassword
+    htpasswd -b ${PASSWD_FILE} $username $mypassword
     # recherche du port à ouvrir pour rutorrent
     declare -i myport
     myport=45001
@@ -94,12 +95,36 @@ function adduser() {
     echo "Le port pour rutorrent sera le $myport"
     sed "s/{{ user }}/${username}/g" user.template | sed "s/{{ port }}/${myport}/g" > $username.yml
     echo "Lancement des dockers pour l'utilisateur ${username}"
+    export passwd_steph=$mypassword
     docker-compose -f $username.yml up -d
     echo "Ajout de l'utilisateur pour le FTP"
     docker exec -i pure_ftp_seedbox /bin/bash << EOF
 ( echo ${mypassword} ; echo ${mypassword} )|pure-pw useradd $username -f /etc/pure-ftpd/passwd/pureftpd.passwd -m -u ftpuser -d /home/ftpusers/$username/data 
 EOF
+    echo "L'utilisateur a été créé."
+    echo "Adresse de rutorrent : https://${BASE_URL}/${username}_rutorrent/"
+    echo "Adresse de sickrage : https://${BASE_URL}/${username}/sickrage/"
   fi
+}
+function create_admin {
+  ###################################
+  # Cette fonction ne va se lancer
+  # que pour créer un admin
+  echo "Vous n'avez pas encore de compte administrateur pour cette seedbox"
+  echo "Il faut en créer un pour pouvoir continuer."
+  echo "Saisissez le mot de passe du compte :"
+  read adminpassword
+  if [ ! -f ${PASSWD_FILE} ] 
+  then
+    htpasswd -bc ${PASSWD_FILE} admin $adminpassword
+  else
+    htpasswd -b ${PASSWD_FILE} admin $adminpassword
+  fi
+  export passwd_admin=${adminpassword}
+  start
+  echo "Le compte admin a été créé."
+  echo "Vous devez maintenant vous connecter sur https://${ADMIN_URL}/portainer et choisir un mot de passe pour sécuriser la partie portainer"
+
 }
 #######################################
 # Variables
@@ -112,6 +137,21 @@ do
   pass=$(echo $line | awk -F':' '{print $2}')
   export passwd_${user}=${pass}
 done
+#########################################
+# Avant de passer à la suite, on va
+# regarde s'il y a un admin
+if [ ! -f ${PASSWD_FILE} ]
+then
+  create_admin
+  exit 0
+fi
+if ! grep -q admin ${PASSWD_FILE}
+then
+  create_admin 
+  exit 0
+fi
+#########################################
+# Options de lancement
 OPTS=`getopt -o vhns: --long start,stop,restart,help,adduser:,deluser: -n 'parse-options' -- "$@"`
 
 if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
@@ -159,4 +199,4 @@ while true ; do
 done
 
 # On n'a passé aucun paramètre, on en déduit qu'il faut démarrer
-#start
+start
