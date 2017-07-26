@@ -47,4 +47,5 @@ services:
       - "traefik.frontend.entryPoints=https"        
     links:
        - rutorrent-{{ user }}:rutorrent-{{ user }}
+       - postfix:postfix
 
