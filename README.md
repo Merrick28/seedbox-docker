@@ -24,6 +24,7 @@ Ce projet utilise les images suivantes :
 - [traefik](https://traefik.io/) : pour gérer les I/O web
 - [portainer/portainer](https://hub.docker.com/r/portainer/portainer/) : GUI pour manipuler les dockers
 - [stilliard/pure-ftpd:hardened](https://github.com/stilliard/docker-pure-ftpd) pour les accès ftp
+- [onesysadmin/ubuntu-postfix](https://github.com/onesysadmin/ubuntu-postfix) pour l'envoi des mails
 
 Traefik va également gérer automatiquement les certificats https pour les front end web.
 
