@@ -51,5 +51,10 @@ services:
 # Postfix
 ############################################
   postfix:
-    image: onesysadmin/ubuntu-postfix
+    image: mwader/postfix-relay
+    environment:
+      - POSTFIX_myhostname=${BASE_URL}
+      - OPENDKIM_DOMAINS=${BASE_URL} ${ADMIN_URL}
+    volumes:
+      - ${CONFIG_DIR}/postfix:/etc/opendkim/keys
 
