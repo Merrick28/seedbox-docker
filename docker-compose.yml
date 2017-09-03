@@ -3,10 +3,9 @@ services:
 ###################################
 #    TRAEFIK
 ###################################
-
   traefik:
     image: traefik:latest
-    command: --web --docker --docker.domain=docker.localhost --logLevel=DEBUG --entryPoints='Name:https Address::443 TLS' --entryPoints='Name:http Address::80' --acme.entrypoint=https --acme=true --acme.domains="${BASE_URL}, ${ADMIN_URL}" --acme.email="${MAIL_ADDRESS}" --acme.ondemand=true acme.onhostrule=true --acme.storage=/certs/acme.json 
+    command: --web --docker --docker.domain=docker.localhost --logLevel=DEBUG --entryPoints='Name:https Address::443 TLS' --entryPoints='Name:http Address::80  Redirect.EntryPoint:https' --acme.entrypoint=https --acme=true --acme.domains="${BASE_URL}, ${ADMIN_URL}" --acme.email="${MAIL_ADDRESS}" --acme.ondemand=true acme.onhostrule=true --acme.storage=/certs/acme.json 
     ports:
       - "80:80"
       - "443:443"
@@ -20,7 +19,7 @@ services:
       - "traefik.frontend.rule=Host:${ADMIN_URL}"
       - "traefik.backend.port=8080"
       - "traefik.frontend.auth.basic=admin:${passwd_admin}"
-      - "traefik.frontend.entryPoints=https"   
+      - "traefik.frontend.entryPoints=https,http"   
 ##########################################
 # Portainer 
 ##########################################
@@ -33,8 +32,7 @@ services:
       - "traefik.backend=portainer"
       - "traefik.frontend.rule=Host:${ADMIN_URL};PathPrefixStrip:/portainer"
       - "traefik.backend.port=9000"
-      - "traefik.frontend.entryPoints=https"    
-      
+      - "traefik.frontend.entryPoints=https,http"    
 ###########################################
 # FTP
 ###########################################
@@ -51,5 +49,10 @@ services:
 # Postfix
 ############################################
   postfix:
-    image: onesysadmin/ubuntu-postfix
+    image: mwader/postfix-relay
+    environment:
+      - POSTFIX_myhostname=${BASE_URL}
+      - OPENDKIM_DOMAINS=${BASE_URL} ${ADMIN_URL}
+    volumes:
+      - ${CONFIG_DIR}/postfix:/etc/opendkim/keys
 

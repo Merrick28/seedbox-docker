@@ -53,7 +53,7 @@ function deluser() {
   docker-compose -f $username.yml down
   echo "Suppression de l'utilisateur ftp"
   docker exec -i pure_ftp_seedbox /bin/bash << EOC                                                                                                                       
-    pure-pw userdel $username
+    pure-pw userdel $username -f /etc/pure-ftpd/passwd/pureftpd.passwd
 EOC
   echo "Suppression des fichiers de configuration"
   rm -f $username.yml
