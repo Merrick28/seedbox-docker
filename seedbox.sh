@@ -102,7 +102,7 @@ EOF
     echo "L'utilisateur a été créé."
     echo "Adresse de rutorrent : https://${BASE_URL}/${username}_rutorrent/"
     echo "Adresse de sickrage : https://${BASE_URL}/${username}/sickrage/"
-    echo "Adresse de couhpotato : https://${BASE_URL}/${username}/sickrage/"
+    echo "Adresse de couhpotato : https://${BASE_URL}/${username}_couchpotato"
     if [ -z $NORESTART ]
     then
        restart
