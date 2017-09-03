@@ -105,8 +105,10 @@ EOF
     echo "Adresse de couhpotato : https://${BASE_URL}/${username}_couchpotato"
     if [ -z $NORESTART ]
     then
-       restart
-       restart
+       stop
+       start
+       stop
+       start
     else
        echo "La seedbox ne va pas être resdémarrée, vous devrez redémarrer à la main pour appliquer les paramètres"
     fi
