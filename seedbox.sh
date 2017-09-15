@@ -212,8 +212,9 @@ while true ; do
       deluser $2
       exit 0
       ;;
-    --update)
+    --upgrade)
       echo "Mise à jour des containers"
+      update
       exit 0
       ;;
       --) shift ; break ;;
