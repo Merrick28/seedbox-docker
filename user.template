@@ -10,7 +10,7 @@ services:
     ports:
       - "{{ port }}:{{ port }}" #UserPort
     labels:
-      - "traefik.backend=rutorrent_{{ user }}"
+      - "traefik.backend=rutorrent-{{ user }}"
       - "traefik.frontend.rule=Host:${BASE_URL};PathPrefix:/{{ user }}_rutorrent"
       - "traefik.backend.port=8080"
       - "traefik.frontend.auth.basic={{ user }}:${passwd_{{ user }}}"
@@ -40,7 +40,7 @@ services:
       - UID=${MYUID}
       - WEBROOT=/{{ user }}/sickrage
     labels:
-      - "traefik.backend=sickrage"
+      - "traefik.backend=sickrage-{{ user }}"
       - "traefik.frontend.rule=Host:${BASE_URL};PathPrefix:/{{ user }}/sickrage"
       - "traefik.backend.port=8081"
       - "traefik.frontend.auth.basic={{ user }}:${passwd_{{ user }}}" 
@@ -51,24 +51,24 @@ services:
 ###############################################                                    
 # COUCHPOTATO                                                                      
 ###############################################                                    
-  couchpotato_{{ user }}:                                                                
-    build:                                                                         
-      context: .                                                                   
-      dockerfile: DockerFileCp                                                     
-    volumes:                                                                       
+  couchpotato_{{ user }}:
+    build:
+      context: .
+      dockerfile: DockerFileCp
+    volumes:
       - $DATA_DIR/{{ user }}/data:/media
       - $DATA_DIR/{{ user }}/config/cp:/config 
-    labels:                                                                        
-      - "traefik.backend=coudhpotato_{{ user }}" 
-      - "traefik.frontend.rule=Host:${BASE_URL};PathPrefix:/{{ user }}_couchpotato" 
-      - "traefik.backend.port=5050"                                                
-      - "traefik.frontend.auth.basic={{ user }}:${passwd_{{ user }}}" 
-      - "traefik.frontend.entryPoints=https,http"                                  
-    links:                                                                         
-       - rutorrent-{{ user }}:rutorrent-{{ user }} 
-       - postfix:postfix                                                           
-    environment:                                                                   
-       - UID=${MYUID}                                                              
-       - GID=${MYGID}                                                              
-       - WEBROOT=/{{ user }}_couchpotato                                                
+    labels:
+      - "traefik.backend=couchpotato-{{ user }}"
+      - "traefik.frontend.rule=Host:${BASE_URL};PathPrefix:/{{ user}}_couchpotato" 
+      - "traefik.backend.port=5050"
+      - "traefik.frontend.auth.basic={{ user }}:${passwd_{{ user }}}"
+      - "traefik.frontend.entryPoints=https,http"
+    links:
+       - rutorrent-{{ user }}:rutorrent-{{ user }}
+       - postfix:postfix
+    environment:
+       - UID=${MYUID}
+       - GID=${MYGID}
+       - WEBROOT=/{{ user }}_couchpotato
 

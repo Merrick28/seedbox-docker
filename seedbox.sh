@@ -42,8 +42,11 @@ function usage {
   echo "./seedbox.sh --stop => arrête la seedbox"
   echo "./seedbox.sh --restart => redémarre la seedbox"
   echo "./seedbox.sh --help => affiche l'aide"
-  echo "./seedbox.sh --adduser toto => crée l'utilisateur toto"
+  echo "./seedbox.sh --adduser toto => crée l'utilisateur toto et redémarre la seedbox"
+  echo "./seedbox.sh --adduser toto --norestart => crée l'utilisateur toto sans redémarrer la seedbox"
   echo "./seedbox.sh --deluser toto => supprime l'utilisateur toto (sans confirmation, les données sont conservées)"
+  echo "./seedbox.sh --update => met à jour tous les containers et redémarre"
+  echo "./seedbox.sh --update --norestart => met à jour tous les containers sans redémarrer"
 }
 function deluser() {
   username=$1
@@ -94,9 +97,6 @@ function adduser() {
     done
     echo "Le port pour rutorrent sera le $myport"
     sed "s/{{ user }}/${username}/g" user.template | sed "s/{{ port }}/${myport}/g" > $username.yml
-    echo "Lancement des dockers pour l'utilisateur ${username}"
-    export passwd_steph=$mypassword
-    docker-compose -f $username.yml up -d
     echo "Ajout de l'utilisateur pour le FTP"
     docker exec -i pure_ftp_seedbox /bin/bash << EOF
 ( echo ${mypassword} ; echo ${mypassword} )|pure-pw useradd $username -f /etc/pure-ftpd/passwd/pureftpd.passwd -m -u ftpuser -d /home/ftpusers/$username/data 
@@ -104,7 +104,29 @@ EOF
     echo "L'utilisateur a été créé."
     echo "Adresse de rutorrent : https://${BASE_URL}/${username}_rutorrent/"
     echo "Adresse de sickrage : https://${BASE_URL}/${username}/sickrage/"
+    echo "Adresse de couchpotato : https://${BASE_URL}/${username}_couchpotato"
+    if [ -z $NORESTART ]
+    then
+       stop
+       start
+       stop
+       start
+    else
+       echo "La seedbox ne va pas être redémarrée, vous devrez redémarrer à la main pour appliquer les paramètres"
+    fi
   fi
+}
+function update {
+    docker-compose $(for file in `ls *yml`;do echo "-f $file";done) --pull
+    if [ -z $NORESTART ]
+    then
+       stop
+       start
+       stop
+       start
+    else
+       echo "La seedbox ne va pas être redémarrée, vous devrez redémarrer à la main pour appliquer les paramètres"
+    fi
 }
 function create_admin {
   ###################################
@@ -159,11 +181,9 @@ if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
 eval set -- "$OPTS"
 while true ; do
   case "$1" in
-    --useradd)
-      case "$2" in
-        "") ARG_A='some default value' ; shift 2 ;;
-        *) ARG_A=$2 ; shift 2 ;;
-      esac ;;
+    --norestart)
+      NORESTART=1
+      ;;
     --start) 
       echo "Démarrage de la seedbox"
       echo "----------------------------------"
@@ -184,13 +204,16 @@ while true ; do
       exit 0
       ;;        
     --adduser)
-      echo "Ajout de l'utilisateur $2"
       adduser $2
       exit 0
       ;;
     --deluser)
       echo "Suppression de l'utilisateur $2"
       deluser $2
+      exit 0
+      ;;
+    --update)
+      echo "Mise à jour des containers"
       exit 0
       ;;
       --) shift ; break ;;
