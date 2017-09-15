@@ -60,7 +60,7 @@ services:
       - $DATA_DIR/{{ user }}/config/cp:/config 
     labels:                                                                        
       - "traefik.backend=coudhpotato_{{ user }}" 
-      - "traefik.frontend.rule=Host:${BASE_URL};PathPrefix:/{{ user}}_couchpotato" 
+      - "traefik.frontend.rule=Host:${BASE_URL};PathPrefix:/{{ user }}_couchpotato" 
       - "traefik.backend.port=5050"                                                
       - "traefik.frontend.auth.basic={{ user }}:${passwd_{{ user }}}" 
       - "traefik.frontend.entryPoints=https,http"                                  
