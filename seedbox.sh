@@ -45,6 +45,8 @@ function usage {
   echo "./seedbox.sh --adduser toto => crée l'utilisateur toto et redémarre la seedbox"
   echo "./seedbox.sh --adduser toto --norestart => crée l'utilisateur toto sans redémarrer la seedbox"
   echo "./seedbox.sh --deluser toto => supprime l'utilisateur toto (sans confirmation, les données sont conservées)"
+  echo "./seedbox.sh --update => met à jour tous les containers et redémarre"
+  echo "./seedbox.sh --update --norestart => met à jour tous les containers sans redémarrer"
 }
 function deluser() {
   username=$1
@@ -102,7 +104,7 @@ EOF
     echo "L'utilisateur a été créé."
     echo "Adresse de rutorrent : https://${BASE_URL}/${username}_rutorrent/"
     echo "Adresse de sickrage : https://${BASE_URL}/${username}/sickrage/"
-    echo "Adresse de couhpotato : https://${BASE_URL}/${username}_couchpotato"
+    echo "Adresse de couchpotato : https://${BASE_URL}/${username}_couchpotato"
     if [ -z $NORESTART ]
     then
        stop
@@ -110,9 +112,21 @@ EOF
        stop
        start
     else
-       echo "La seedbox ne va pas être resdémarrée, vous devrez redémarrer à la main pour appliquer les paramètres"
+       echo "La seedbox ne va pas être redémarrée, vous devrez redémarrer à la main pour appliquer les paramètres"
     fi
   fi
+}
+function update {
+    docker-compose $(for file in `ls *yml`;do echo "-f $file";done) --pull
+    if [ -z $NORESTART ]
+    then
+       stop
+       start
+       stop
+       start
+    else
+       echo "La seedbox ne va pas être redémarrée, vous devrez redémarrer à la main pour appliquer les paramètres"
+    fi
 }
 function create_admin {
   ###################################
@@ -196,6 +210,10 @@ while true ; do
     --deluser)
       echo "Suppression de l'utilisateur $2"
       deluser $2
+      exit 0
+      ;;
+    --update)
+      echo "Mise à jour des containers"
       exit 0
       ;;
       --) shift ; break ;;
