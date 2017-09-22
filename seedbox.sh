@@ -149,7 +149,7 @@ done
 #########################################
 # On vérifie que le user est bien dans le groupe docker
 if groups $USER | grep &>/dev/null '\bdocker\b'; then
-    echo "L'utilisateur est bien dans le group docker"
+    :
 else
     echo "#####################################"
     echo "ERREUR"
