@@ -42,11 +42,9 @@ function usage {
   echo "./seedbox.sh --stop => arrête la seedbox"
   echo "./seedbox.sh --restart => redémarre la seedbox"
   echo "./seedbox.sh --help => affiche l'aide"
-  echo "./seedbox.sh --adduser toto => crée l'utilisateur toto et redémarre la seedbox"
-  echo "./seedbox.sh --adduser toto --norestart => crée l'utilisateur toto sans redémarrer la seedbox"
+  echo "./seedbox.sh --adduser toto => crée l'utilisateur toto"
   echo "./seedbox.sh --deluser toto => supprime l'utilisateur toto (sans confirmation, les données sont conservées)"
-  echo "./seedbox.sh --update => met à jour tous les containers et redémarre"
-  echo "./seedbox.sh --update --norestart => met à jour tous les containers sans redémarrer"
+  echo "./seedbox.sh --maj => met à jour tous les containers"
 }
 function deluser() {
   username=$1
@@ -211,7 +209,7 @@ while true ; do
       deluser $2
       exit 0
       ;;
-    --upgrade)
+    --maj)
       echo "Mise à jour des containers"
       update
       exit 0
