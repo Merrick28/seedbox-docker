@@ -111,7 +111,7 @@ EOF
     affiche_restart
   fi
 }
-function update {
+function maj {
     docker-compose $(for file in `ls *yml`;do echo "-f $file";done) pull
     affiche_restart
 }
@@ -174,7 +174,7 @@ then
 fi
 #########################################
 # Options de lancement
-OPTS=`getopt -o vhns: --long start,stop,restart,help,adduser:,deluser: -n 'parse-options' -- "$@"`
+OPTS=`getopt -o vhns: --long start,stop,restart,help,maj,adduser:,deluser: -n 'parse-options' -- "$@"`
 
 if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
 
@@ -211,7 +211,7 @@ while true ; do
       ;;
     --maj)
       echo "Mise à jour des containers"
-      update
+      maj
       exit 0
       ;;
       --) shift ; break ;;
