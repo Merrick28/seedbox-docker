@@ -149,6 +149,19 @@ do
   export passwd_${user}=${pass}
 done
 #########################################
+# On vérifie que le user est bien dans le groupe docker
+if groups $USER | grep &>/dev/null '\bdocker\b'; then
+    echo "L'utilisateur est bien dans le group docker"
+else
+    echo "#####################################"
+    echo "ERREUR"
+    echo "Votre utilisateur n'est pas dans le groupe docker"
+    echo "Lancez la commande"
+    echo "sudo usermod -aG docker $USER"
+    echo "Puis déconnectez et reconnectez vous"
+    exit 1
+fi
+#########################################
 # Avant de passer à la suite, on va
 # regarder s'il y a un admin
 if [ ! -f ${PASSWD_FILE} ]
