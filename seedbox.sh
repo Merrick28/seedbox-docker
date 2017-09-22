@@ -3,27 +3,24 @@
 # Ce script va charger les variables 
 # d'environnement nécessaires
 # puis lancer le docker-compose up -d
-######################################
-# DEFINITION DES VARIABLES
-# ====================================
-# Url de base
-# Les sites seront accessibles par
-# https://BASE_URL/xxx
-export BASE_URL=sb2.sdewitte.net
-# URL pour Traefik
-export ADMIN_URL=traefik.sdewitte.net
-# Fichier de password
-export PASSWD_FILE=./passwd
-# Adresse mail de contact 
-# (pour les certificats letsencrypt)
-export MAIL_ADDRESS=stephane.dewitte@gmail.com
-# Dossier de configuration
-# Va recevoir la configuration de la seedbox 
-# Concerne la configuration globale (hors utilisateur)
-export CONFIG_DIR=/home/steph/config-seedbox
-# Dossier utilisateurs
-# Chaque utilisateur aura un dossier sous ce dossier
-export DATA_DIR=/home/steph/data-seedbox
+if [ ! -f ./vars ]; then
+    echo "Le fichier vars n'a pas été trouvé"
+    echo "Vous devez copier le fichier vars-default en vars"
+    echo "Puis l'éditer selon vos besoins"
+    exit 1
+else
+    source ./vars
+fi
+# test des variables
+for myvar in BASE_URL ADMIN_URL PASSWD_FILE MAIL_ADDRESS CONFIG_DIR DATA_DIR
+do
+    if [ -z "${!myvar}" ]; then
+      echo "La variable $myvar n'a pas été renseignée"
+      echo "Vérifiez votre fichier vars avant de continuer"
+      exit 1
+    fi
+
+done
 ##########################
 # Ne touchez à rien après cette ligne
 ##########################
