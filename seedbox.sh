@@ -51,8 +51,6 @@ function usage {
 function deluser() {
   username=$1
   # On commence par arrêter les services
-  echo "Arrêt des services"
-  docker-compose -f $username.yml down
   echo "Suppression de l'utilisateur ftp"
   docker exec -i pure_ftp_seedbox /bin/bash << EOC                                                                                                                       
     pure-pw userdel $username -f /etc/pure-ftpd/passwd/pureftpd.passwd
@@ -64,6 +62,13 @@ EOC
   echo "Suppression de l'utilisateur terminée"
   echo "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
   echo "Les dossiers de l'utilisateur ont été conservés"
+  affiche_restart
+}
+function affiche_restart() {
+  echo "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+  echo "IMPORTANT"
+  echo "Vous devez redémarrer la seedbox pour appliquer les changements"
+  echo "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 }
 function adduser() {
   username=$1
@@ -105,28 +110,12 @@ EOF
     echo "Adresse de rutorrent : https://${BASE_URL}/${username}_rutorrent/"
     echo "Adresse de sickrage : https://${BASE_URL}/${username}/sickrage/"
     echo "Adresse de couchpotato : https://${BASE_URL}/${username}_couchpotato"
-    if [ -z $NORESTART ]
-    then
-       stop
-       start
-       stop
-       start
-    else
-       echo "La seedbox ne va pas être redémarrée, vous devrez redémarrer à la main pour appliquer les paramètres"
-    fi
+    affiche_restart
   fi
 }
 function update {
-    docker-compose $(for file in `ls *yml`;do echo "-f $file";done) --pull
-    if [ -z $NORESTART ]
-    then
-       stop
-       start
-       stop
-       start
-    else
-       echo "La seedbox ne va pas être redémarrée, vous devrez redémarrer à la main pour appliquer les paramètres"
-    fi
+    docker-compose $(for file in `ls *yml`;do echo "-f $file";done) pull
+    affiche_restart
 }
 function create_admin {
   ###################################
@@ -181,9 +170,6 @@ if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
 eval set -- "$OPTS"
 while true ; do
   case "$1" in
-    --norestart)
-      NORESTART=1
-      ;;
     --start) 
       echo "Démarrage de la seedbox"
       echo "----------------------------------"
