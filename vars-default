@@ -11,7 +11,7 @@ export ADMIN_URL=traefik.sdewitte.net
 export PASSWD_FILE=./passwd
 # Adresse mail de contact
 # (pour les certificats letsencrypt)
-export MAIL_ADDRESS=stephane.dewitte@gmail.com
+export MAIL_ADDRESS=me.myself@toto.com
 # Dossier de configuration
 # Va recevoir la configuration de la seedbox
 # Concerne la configuration globale (hors utilisateur)
