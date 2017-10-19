@@ -103,7 +103,7 @@ function adduser() {
 EOF
     echo "L'utilisateur a été créé."
     echo "Adresse de rutorrent : https://${BASE_URL}/${username}_rutorrent/"
-    echo "Adresse de sickrage : https://${BASE_URL}/${username}/sickrage/"
+    echo "Adresse de sickrage : https://${BASE_URL}/${username}_sickrage/"
     echo "Adresse de couchpotato : https://${BASE_URL}/${username}_couchpotato"
     affiche_restart
   fi

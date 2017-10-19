@@ -33,7 +33,7 @@ services:
   sickrage_{{ user }}:
     image: xataz/sickrage
     volumes: 
-      - $DATA_DIR/{{ user }}/data:/downloads
+      - $DATA_DIR/{{ user }}/data:/torrents
       - $DATA_DIR/{{ user }}/config/sr:/config
     environment:
       - GID=${MYGID}
@@ -41,7 +41,7 @@ services:
       - WEBROOT=/{{ user }}/sickrage
     labels:
       - "traefik.backend=sickrage-{{ user }}"
-      - "traefik.frontend.rule=Host:${BASE_URL};PathPrefix:/{{ user }}/sickrage"
+      - "traefik.frontend.rule=Host:${BASE_URL};PathPrefix:/{{ user }}_sickrage"
       - "traefik.backend.port=8081"
       - "traefik.frontend.auth.basic={{ user }}:${passwd_{{ user }}}" 
       - "traefik.frontend.entryPoints=https,http"        
@@ -56,7 +56,7 @@ services:
       context: .
       dockerfile: DockerFileCp
     volumes:
-      - $DATA_DIR/{{ user }}/data:/media
+      - $DATA_DIR/{{ user }}/data:/torrents
       - $DATA_DIR/{{ user }}/config/cp:/config 
     labels:
       - "traefik.backend=couchpotato-{{ user }}"
