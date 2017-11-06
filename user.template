@@ -38,7 +38,7 @@ services:
     environment:
       - GID=${MYGID}
       - UID=${MYUID}
-      - WEBROOT=/{{ user }}/sickrage
+      - WEBROOT=/{{ user }}_sickrage
     labels:
       - "traefik.backend=sickrage-{{ user }}"
       - "traefik.frontend.rule=Host:${BASE_URL};PathPrefix:/{{ user }}_sickrage"
