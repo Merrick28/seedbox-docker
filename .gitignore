@@ -2,3 +2,4 @@ passwd
 steph.yml
 specific-steph.yml
 vars
+seedbox-docker.pid
