@@ -150,6 +150,7 @@ function interactive {
         "1)" "Démarrer la seedbox."   \
         "2)" "Arrêter la seedbox."  \
         "3)" "Redémarrer la seedbox." \
+        "4)" "Ajouter un utilisateur." \
         "q)" "Quitter cette interface"  3>&2 2>&1 1>&3
     )
     case $CHOICE in
@@ -161,16 +162,24 @@ function interactive {
         ;;
 
         "3)")
-            whiptail --textbox /dev/stdin 16 100 9 <<< $(./seedbox.sh --stop 2>&1)
-            whiptail --textbox /dev/stdin 16 100 9 <<< $(./seedbox.sh --start 2>&1)
+            stop
+            start
         ;;
+
+        "4)")
+            USERNAME=$'whiptail --inputbox "Entrez le nom d'utilisateur" --title "Choix utilisateur" 20 78)
+            adduser $USERNAME
+
+        ;;
+
+
 
 
 
         "q)") exit
             ;;
     esac
-    whiptail --msgbox "$result" 20 78
+    #whiptail --msgbox "$result" 20 78
     done
   exit 0
 }
