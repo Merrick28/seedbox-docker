@@ -46,7 +46,6 @@ function affiche {
 function usage {
 read -d '' USAGE << EOF
 Seedbox
--------------------------
 Usage :
 ./seedbox.sh => lancement en interactif
 ./seedbox.sh --start => lancement de la seedbox
@@ -58,7 +57,7 @@ Usage :
 ./seedbox.sh --maj => met à jour tous les containers
 ./seedbox.sh --help => affiche cette aide
 EOF
-    affiche $USAGE
+    affiche "'$USAGE'"
 }
 # deluser
 function deluser() {
