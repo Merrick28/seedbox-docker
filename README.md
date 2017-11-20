@@ -21,6 +21,7 @@ Ce projet utilise les images suivantes :
 - [traefik](https://traefik.io/) : pour gérer les I/O web
 - [xataz/rtorrent-rutorrent](https://hub.docker.com/r/xataz/rtorrent-rutorrent/) : rtorrent et rutorrent
 - [xataz/sickrage](https://hub.docker.com/r/xataz/sickrage/) : sickrage
+- [xataz/medusa](https://hub.docker.com/r/xataz/medusa/) : medusa
 - [xataz/couchpotato](https://hub.docker.com/r/xataz/couchpotato/) : couchpotato (l'image est modifiée pour ajouter unrar)
 - [portainer/portainer](https://hub.docker.com/r/portainer/portainer/) : GUI pour manipuler les dockers
 - [stilliard/pure-ftpd:hardened](https://github.com/stilliard/docker-pure-ftpd) pour les accès ftp
