@@ -73,7 +73,7 @@ Vous devez redémarrer la seedbox pour appliquer les changements
 EOF
     if [ ${INTERACTIVE} -eq 0 ]
     then
-        echo $RESULT
+        echo "$RESULT"
     else
         whiptail --msgbox "$RESULT" --title "Utilisateur déjà existant" 20 78
         return
@@ -95,7 +95,7 @@ function adduser() {
 EOF
     if [ ${INTERACTIVE} -eq 0 ]
     then
-        echo $RESULT
+        echo "$RESULT"
         exit 1
     else
         whiptail --msgbox "$RESULT" --title "Utilisateur déjà existant" 20 78
@@ -145,7 +145,7 @@ Adresse de couchpotato : https://${BASE_URL}/${username}_couchpotato
 EOF
     if [ ${INTERACTIVE} -eq 0 ]
     then
-        echo $RESULT
+        echo "$RESULT"
     else
         whiptail --msgbox "$RESULT" --title "Utilisateur déjà existant" 20 78
     fi
