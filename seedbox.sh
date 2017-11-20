@@ -57,7 +57,7 @@ Usage :
 ./seedbox.sh --maj => met à jour tous les containers
 ./seedbox.sh --help => affiche cette aide
 EOF
-    affiche "'$USAGE'"
+    affiche "$USAGE"
 }
 # deluser
 function deluser() {
