@@ -1,2 +1,0 @@
-# Stephane DEWITTE
-- main developper
