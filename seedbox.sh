@@ -102,7 +102,7 @@ function adduser() {
         fi
       fi
     done
-    echo "Le port pour rutorrent sera le $myport"
+    #echo "Le port pour rutorrent sera le $myport"
     sed "s/{{ user }}/${username}/g" user.template | sed "s/{{ port }}/${myport}/g" > $username.yml
     echo "Ajout de l'utilisateur pour le FTP"
     docker exec -i pure_ftp_seedbox /bin/bash << EOF
@@ -142,7 +142,36 @@ function create_admin {
 
 }
 function interactive {
+  INTERACTIVE=1
+  while [ 1 ]
+    do
+    CHOICE=$(
+    whiptail --title "Seedbox docker" --menu "Faites votre choix" 16 100 9 \
+        "1)" "Démarrer la seedbox."   \
+        "2)" "Arrêter la seedbox."  \
+        "3)" "Redémarrer la seedbox." \
+        "q)" "Quitter cette interface"  3>&2 2>&1 1>&3
+    )
+    case $CHOICE in
+        "1)")
+            start
+        ;;
+        "2)")
+            stop
+        ;;
 
+        "3)")
+            stop
+            start
+        ;;
+
+
+
+        "q)") exit
+            ;;
+    esac
+    whiptail --msgbox "$result" 20 78
+    done
   exit 0
 }
 #######################################
