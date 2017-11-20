@@ -1,7 +1,7 @@
 version: '2'
 services:
 ###################################
-#    TRAEFIK
+#  TRAEFIK
 ###################################
   traefik:
     image: traefik:latest
@@ -20,6 +20,7 @@ services:
       - "traefik.backend.port=8080"
       - "traefik.frontend.auth.basic=admin:${passwd_admin}"
       - "traefik.frontend.entryPoints=https,http"   
+    container_name: traefik
 ##########################################
 # Portainer 
 ##########################################
