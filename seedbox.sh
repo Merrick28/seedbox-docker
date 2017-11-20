@@ -161,8 +161,8 @@ function interactive {
         ;;
 
         "3)")
-            stop
-            start
+            whiptail --textbox /dev/stdin 16 100 9 <<< stop
+            whiptail --textbox /dev/stdin 16 100 9 <<< start
         ;;
 
 
