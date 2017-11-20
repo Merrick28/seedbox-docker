@@ -161,8 +161,8 @@ function interactive {
         ;;
 
         "3)")
-            whiptail --textbox /dev/stdin 16 100 9 <<< stop
-            whiptail --textbox /dev/stdin 16 100 9 <<< start
+            whiptail --textbox /dev/stdin 16 100 9 <<< $(./seedbox.sh --stop)
+            whiptail --textbox /dev/stdin 16 100 9 <<< $(./seedbox.sh --start)
         ;;
 
 
