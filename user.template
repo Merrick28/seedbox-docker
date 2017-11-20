@@ -48,6 +48,29 @@ services:
     links:
        - rutorrent-{{ user }}:rutorrent-{{ user }}
        - postfix:postfix
+################################################
+# MEDUSA
+################################################
+  medusa:
+    image: xataz/medusa
+    volumes:
+      - $DATA_DIR/{{ user }}/config/medusa:/config/Medusa
+      - $DATA_DIR/{{ user }}/data:/torrents
+    environment:
+      - GID=${MYGID}
+      - UID=${MYUID}
+      - MEDUSA_WEBROOT=/{{ user }}_medusa
+      - MEDUSA_TVDIRS=/torrents
+    labels:
+      - "traefik.backend=medusa_{{ user }}"
+      - "traefik.frontend.rule=Host:${BASE_URL};PathPrefix:/{{ user }}_medusa"
+      - "traefik.backend.port=8080"
+      - "traefik.frontend.auth.basic={{ user }}:${passwd_{{ user }}}"
+      - "traefik.frontend.entryPoints=https"
+    links:
+       - rutorrent-steph:rutorrent-{{ user }}
+       - postfix:postfix
+
 ###############################################                                    
 # COUCHPOTATO                                                                      
 ###############################################                                    
