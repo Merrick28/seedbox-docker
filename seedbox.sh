@@ -77,12 +77,24 @@ function adduser() {
   echo "Ajout de l'utilisateur $1"
   if [ -f $username.yml ]
   then
-    echo "#############################"
-    echo "# Utilisateur déjà existant #"
-    echo "#############################"
-    echo "# Si vous voulez le recréer "
-    echo "# Merci de le supprimer avant"
-    exit 1
+    if [ ${INTERACTIVE} -eq 0 ]
+    then
+        echo "#############################"
+        echo "# Utilisateur déjà existant #"
+        echo "#############################"
+        echo "# Si vous voulez le recréer "
+        echo "# Merci de le supprimer avant"
+        exit 1
+    else
+        RESULT="#############################\
+# Utilisateur déjà existant #\
+#############################"
+        whiptail --msgbox "$RESULT" --title "Utilisateur déjà existant" 20 78
+        interactive
+
+
+
+    fi
   else
     echo "Entrez son password, suivi de entrée"
     read mypassword
@@ -167,7 +179,7 @@ function interactive {
         ;;
 
         "4)")
-            USERNAME=$(whiptail --inputbox "Entrez le nom d'utilisateur" --title "Choix utilisateur" 20 78 3>&1 1>&2 2>&3)
+            USERNAME=$(whiptail --inputbox "Entrez le nom d'utilisateur" --title "Choix utilisateur" 10 78 3>&1 1>&2 2>&3)
             adduser $USERNAME
 
         ;;
