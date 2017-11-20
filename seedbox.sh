@@ -90,7 +90,7 @@ function adduser() {
 # Utilisateur déjà existant #\
 #############################"
         whiptail --msgbox "$RESULT" --title "Utilisateur déjà existant" 20 78
-        interactive
+        return
 
 
 
