@@ -86,9 +86,12 @@ function adduser() {
         echo "# Merci de le supprimer avant"
         exit 1
     else
-        RESULT="#############################\
-# Utilisateur déjà existant #\
-#############################"
+        read -d '' RESULT << EOF
+#############################
+# Utilisateur déjà existant #
+#############################
+EOF
+
         whiptail --msgbox "$RESULT" --title "Utilisateur déjà existant" 20 78
         return
 
