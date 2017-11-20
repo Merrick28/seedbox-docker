@@ -77,31 +77,35 @@ function adduser() {
   echo "Ajout de l'utilisateur $1"
   if [ -f $username.yml ]
   then
-    if [ ${INTERACTIVE} -eq 0 ]
-    then
-        echo "#############################"
-        echo "# Utilisateur déjà existant #"
-        echo "#############################"
-        echo "# Si vous voulez le recréer "
-        echo "# Merci de le supprimer avant"
-        exit 1
-    else
-        read -d '' RESULT << EOF
+    read -d '' RESULT << EOF
 #############################
 # Utilisateur déjà existant #
 #############################
+# Si vous voulez le recréer
+# Merci de le supprimer avant
 EOF
-
+    if [ ${INTERACTIVE} -eq 0 ]
+    then
+        echo $RESULT
+        exit 1
+    else
         whiptail --msgbox "$RESULT" --title "Utilisateur déjà existant" 20 78
         return
-
-
+   fi
+  else
+    if [ ${INTERACTIVE} -eq 0 ]
+    then
+        echo "Entrez son password, suivi de entrée"
+        read mypassword
+    else
+        mypassword=$(whiptail --passwordbox "Entrez le password de l'utilisateur ${username}" 8 78 --title "password dialog" 3>&1 1>&2 2>&3)
+        exitstatus=$?
+        if [ $exitstatus != 0 ]; then
+            whiptail --msgbox "Action annulée" --title "Action annulée" 20 78
+            return
+        fi
 
     fi
-  else
-    echo "Entrez son password, suivi de entrée"
-    read mypassword
-    echo "Enregistrement du password"
     htpasswd -b ${PASSWD_FILE} $username $mypassword
     # recherche du port à ouvrir pour rutorrent
     declare -i myport
@@ -119,14 +123,17 @@ EOF
     done
     #echo "Le port pour rutorrent sera le $myport"
     sed "s/{{ user }}/${username}/g" user.template | sed "s/{{ port }}/${myport}/g" > $username.yml
-    echo "Ajout de l'utilisateur pour le FTP"
+    #echo "Ajout de l'utilisateur pour le FTP"
     docker exec -i pure_ftp_seedbox /bin/bash << EOF
 ( echo ${mypassword} ; echo ${mypassword} )|pure-pw useradd $username -f /etc/pure-ftpd/passwd/pureftpd.passwd -m -u ftpuser -d /home/ftpusers/$username/data 
 EOF
-    echo "L'utilisateur a été créé."
-    echo "Adresse de rutorrent : https://${BASE_URL}/${username}_rutorrent/"
-    echo "Adresse de sickrage : https://${BASE_URL}/${username}_sickrage/"
-    echo "Adresse de couchpotato : https://${BASE_URL}/${username}_couchpotato"
+read -d '' RESULT << EOF
+L\'utilisateur a été créé.
+Adresse de rutorrent : https://${BASE_URL}/${username}_rutorrent/
+Adresse de sickrage : https://${BASE_URL}/${username}_sickrage/
+Adresse de medusa : https://${BASE_URL}/${username}_medusa/
+Adresse de couchpotato : https://${BASE_URL}/${username}_couchpotato
+EOF
     affiche_restart
   fi
 }
