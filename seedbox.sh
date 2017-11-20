@@ -65,10 +65,19 @@ EOC
 }
 # affiche_restart
 function affiche_restart() {
-  echo "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-  echo "IMPORTANT"
-  echo "Vous devez redémarrer la seedbox pour appliquer les changements"
-  echo "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+    read -d '' RESULT << EOF
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+IMPORTANT
+Vous devez redémarrer la seedbox pour appliquer les changements
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+EOF
+    if [ ${INTERACTIVE} -eq 0 ]
+    then
+        echo $RESULT
+    else
+        whiptail --msgbox "$RESULT" --title "Utilisateur déjà existant" 20 78
+        return
+    fi
 }
 # adduser
 # prend en parametre le user à rajouter
@@ -134,6 +143,12 @@ Adresse de sickrage : https://${BASE_URL}/${username}_sickrage/
 Adresse de medusa : https://${BASE_URL}/${username}_medusa/
 Adresse de couchpotato : https://${BASE_URL}/${username}_couchpotato
 EOF
+    if [ ${INTERACTIVE} -eq 0 ]
+    then
+        echo $RESULT
+    else
+        whiptail --msgbox "$RESULT" --title "Utilisateur déjà existant" 20 78
+    fi
     affiche_restart
   fi
 }
