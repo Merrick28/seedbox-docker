@@ -32,31 +32,44 @@ function start {
 function stop {
   docker-compose $(for file in `ls *yml`;do echo "-f $file";done) down
 }
+# affiche
+function affiche {
+     if [ ${INTERACTIVE} -eq 0 ]
+    then
+        echo "$1"
+    else
+        whiptail --msgbox "$1" 20 78
+        return
+    fi
+}
 # usage
 function usage {
-  echo "Seedbox"
-  echo "-------------------------"
-  echo "Usage : "
-  echo "./seedbox.sh => lancement en interactif"
-  echo "./seedbox.sh --start => lancement de la seedbox"
-  echo "./seedbox.sh --stop => arrête la seedbox"
-  echo "./seedbox.sh --restart => redémarre la seedbox"
-  echo "./seedbox.sh --help => affiche l'aide"
-  echo "./seedbox.sh --adduser toto => crée l'utilisateur toto"
-  echo "./seedbox.sh --deluser toto => supprime l'utilisateur toto (sans confirmation, les données sont conservées)"
-  echo "./seedbox.sh --maj => met à jour tous les containers"
-  echo "./seedbox.sh --help => affiche cette aide"
+read -d '' USAGE << EOF
+Seedbox
+-------------------------
+Usage :
+./seedbox.sh => lancement en interactif
+./seedbox.sh --start => lancement de la seedbox
+./seedbox.sh --stop => arrête la seedbox
+./seedbox.sh --restart => redémarre la seedbox
+./seedbox.sh --help => affiche l'aide
+./seedbox.sh --adduser toto => crée l'utilisateur toto
+./seedbox.sh --deluser toto => supprime l'utilisateur toto (sans confirmation, les données sont conservées)
+./seedbox.sh --maj => met à jour tous les containers
+./seedbox.sh --help => affiche cette aide
+EOF
+    affiche $USAGE
 }
 # deluser
 function deluser() {
   username=$1
-  echo "Suppression de l'utilisateur ftp"
+  # Suppression de l'utilisateur ftp
   docker exec -i pure_ftp_seedbox /bin/bash << EOC 
     pure-pw userdel $username -f /etc/pure-ftpd/passwd/pureftpd.passwd
 EOC
-  echo "Suppression des fichiers de configuration"
+  # Suppression des fichiers de configuration"
   rm -f $username.yml
-  echo "Suppression du fichier des mots de passe"
+  # Suppression du fichier des mots de passe"
   htpasswd -D ${PASSWD_FILE} $username
   echo "Suppression de l'utilisateur terminée"
   echo "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
@@ -71,19 +84,12 @@ IMPORTANT
 Vous devez redémarrer la seedbox pour appliquer les changements
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 EOF
-    if [ ${INTERACTIVE} -eq 0 ]
-    then
-        echo "$RESULT"
-    else
-        whiptail --msgbox "$RESULT" --title "Utilisateur déjà existant" 20 78
-        return
-    fi
+    affiche $RESULT
 }
 # adduser
 # prend en parametre le user à rajouter
 function adduser() {
   username=$1
-  echo "Ajout de l'utilisateur $1"
   if [ -f $username.yml ]
   then
     read -d '' RESULT << EOF
@@ -93,14 +99,7 @@ function adduser() {
 # Si vous voulez le recréer
 # Merci de le supprimer avant
 EOF
-    if [ ${INTERACTIVE} -eq 0 ]
-    then
-        echo "$RESULT"
-        exit 1
-    else
-        whiptail --msgbox "$RESULT" --title "Utilisateur déjà existant" 20 78
-        return
-   fi
+    affiche $RESULT
   else
     if [ ${INTERACTIVE} -eq 0 ]
     then
@@ -143,12 +142,7 @@ Adresse de sickrage : https://${BASE_URL}/${username}_sickrage/
 Adresse de medusa : https://${BASE_URL}/${username}_medusa/
 Adresse de couchpotato : https://${BASE_URL}/${username}_couchpotato
 EOF
-    if [ ${INTERACTIVE} -eq 0 ]
-    then
-        echo "$RESULT"
-    else
-        whiptail --msgbox "$RESULT" --title "Utilisateur déjà existant" 20 78
-    fi
+    affiche $RESULT
     affiche_restart
   fi
 }
@@ -188,6 +182,7 @@ function interactive {
         "2)" "Arrêter la seedbox."  \
         "3)" "Redémarrer la seedbox." \
         "4)" "Ajouter un utilisateur." \
+        "h)" "Afficher l'aide." \
         "q)" "Quitter cette interface"  3>&2 2>&1 1>&3
     )
     case $CHOICE in
@@ -205,11 +200,17 @@ function interactive {
 
         "4)")
             USERNAME=$(whiptail --inputbox "Entrez le nom d'utilisateur" --title "Choix utilisateur" 10 78 3>&1 1>&2 2>&3)
+            exitstatus=$?
+            if [ $exitstatus != 0 ]; then
+                whiptail --msgbox "Action annulée" --title "Action annulée" 20 78
+                return
+            fi
             adduser $USERNAME
-
         ;;
 
-
+        "h)")
+            usage
+        ;;
 
 
 
@@ -232,6 +233,11 @@ do
   export passwd_${user}=${pass}
 done
 INTERACTIVE=0 # on met le interactive à 0, on changera plus tard si besoin
+
+#######################
+# LANCEMENT PRINCIPAL #
+#######################
+
 #########################################
 # On vérifie que le user est bien dans le groupe docker
 if groups $USER | grep &>/dev/null '\bdocker\b'; then
@@ -245,6 +251,7 @@ else
     echo "Puis déconnectez et reconnectez vous"
     exit 1
 fi
+
 #########################################
 # Avant de passer à la suite, on va
 # regarder s'il y a un admin
@@ -255,9 +262,10 @@ then
 fi
 if ! grep -q admin ${PASSWD_FILE}
 then
-  create_admin 
+  create_admin
   exit 0
 fi
+
 #########################################
 # Options de lancement
 OPTS=`getopt -o vhns: --long start,stop,restart,help,maj,adduser:,deluser:,interactive -n 'parse-options' -- "$@"`
