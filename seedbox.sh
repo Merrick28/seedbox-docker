@@ -167,7 +167,7 @@ function interactive {
         ;;
 
         "4)")
-            USERNAME=$'whiptail --inputbox "Entrez le nom d'utilisateur" --title "Choix utilisateur" 20 78)
+            USERNAME=$(whiptail --inputbox "Entrez le nom d'utilisateur" --title "Choix utilisateur" 20 78)
             adduser $USERNAME
 
         ;;
