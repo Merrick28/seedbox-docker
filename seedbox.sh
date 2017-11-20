@@ -22,32 +22,36 @@ do
 
 done
 ##########################
-# Ne touchez à rien après cette ligne
-##########################
 # Définition des fonctions
+##########################
+# Start
 function start {
   docker-compose $(for file in `ls *yml`;do echo "-f $file";done) up -d
 }
+# stop
 function stop {
   docker-compose $(for file in `ls *yml`;do echo "-f $file";done) down
 }
+# usage
 function usage {
   echo "Seedbox"
   echo "-------------------------"
   echo "Usage : "
-  echo "./seedbox.sh (ou seedbox.sh --start) => lancement de la seedbox"
+  echo "./seedbox.sh => lancement en interactif"
+  echo "./seedbox.sh --start => lancement de la seedbox"
   echo "./seedbox.sh --stop => arrête la seedbox"
   echo "./seedbox.sh --restart => redémarre la seedbox"
   echo "./seedbox.sh --help => affiche l'aide"
   echo "./seedbox.sh --adduser toto => crée l'utilisateur toto"
   echo "./seedbox.sh --deluser toto => supprime l'utilisateur toto (sans confirmation, les données sont conservées)"
   echo "./seedbox.sh --maj => met à jour tous les containers"
+  echo "./seedbox.sh --help => affiche cette aide"
 }
+# deluser
 function deluser() {
   username=$1
-  # On commence par arrêter les services
   echo "Suppression de l'utilisateur ftp"
-  docker exec -i pure_ftp_seedbox /bin/bash << EOC                                                                                                                       
+  docker exec -i pure_ftp_seedbox /bin/bash << EOC 
     pure-pw userdel $username -f /etc/pure-ftpd/passwd/pureftpd.passwd
 EOC
   echo "Suppression des fichiers de configuration"
@@ -59,12 +63,15 @@ EOC
   echo "Les dossiers de l'utilisateur ont été conservés"
   affiche_restart
 }
+# affiche_restart
 function affiche_restart() {
   echo "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
   echo "IMPORTANT"
   echo "Vous devez redémarrer la seedbox pour appliquer les changements"
   echo "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 }
+# adduser
+# prend en parametre le user à rajouter
 function adduser() {
   username=$1
   echo "Ajout de l'utilisateur $1"
@@ -108,10 +115,12 @@ EOF
     affiche_restart
   fi
 }
+# maj => met à jour tous les containers
 function maj {
     docker-compose $(for file in `ls *yml`;do echo "-f $file";done) pull
     affiche_restart
 }
+# create_admin
 function create_admin {
   ###################################
   # Cette fonction ne va se lancer
@@ -132,6 +141,10 @@ function create_admin {
   echo "Vous devez maintenant vous connecter sur https://${ADMIN_URL}/portainer et choisir un mot de passe pour sécuriser la partie portainer"
 
 }
+function interactive {
+
+  exit 0
+}
 #######################################
 # Variables
 export MYUID=$(id -u)
@@ -143,6 +156,7 @@ do
   pass=$(echo $line | awk -F':' '{print $2}')
   export passwd_${user}=${pass}
 done
+INTERACTIVE=0 # on met le interactive à 0, on changera plus tard si besoin
 #########################################
 # On vérifie que le user est bien dans le groupe docker
 if groups $USER | grep &>/dev/null '\bdocker\b'; then
@@ -171,13 +185,17 @@ then
 fi
 #########################################
 # Options de lancement
-OPTS=`getopt -o vhns: --long start,stop,restart,help,maj,adduser:,deluser: -n 'parse-options' -- "$@"`
+OPTS=`getopt -o vhns: --long start,stop,restart,help,maj,adduser:,deluser:,interactive -n 'parse-options' -- "$@"`
 
 if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
 
 eval set -- "$OPTS"
 while true ; do
   case "$1" in
+    --interactive)
+      interactive
+      exit 0
+      ;;
     --start) 
       echo "Démarrage de la seedbox"
       echo "----------------------------------"
@@ -216,5 +234,5 @@ while true ; do
   esac
 done
 
-# On n'a passé aucun paramètre, on en déduit qu'il faut démarrer
-start
+# On n'a passé aucun paramètre, on en déduit qu'il faut partir en interactif
+interactive
