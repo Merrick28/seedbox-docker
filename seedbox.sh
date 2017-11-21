@@ -201,28 +201,28 @@ function interactive {
     do
     CHOICE=$(
     whiptail --title "Seedbox docker" --menu "Faites votre choix" 16 100 9 \
-        "1)" "Démarrer la seedbox."   \
-        "2)" "Arrêter la seedbox."  \
-        "3)" "Redémarrer la seedbox." \
-        "4)" "Ajouter un utilisateur." \
-        "m)" "Mise à jour."\
-        "h)" "Afficher l'aide." \
-        "q)" "Quitter cette interface"  3>&2 2>&1 1>&3
+        "start" "Démarrer la seedbox."   \
+        "stop" "Arrêter la seedbox."  \
+        "restart" "Redémarrer la seedbox." \
+        "adduser" "Ajouter un utilisateur." \
+        "maj" "Mise à jour."\
+        "help" "Afficher l'aide." \
+        "quit" "Quitter cette interface"  3>&2 2>&1 1>&3
     )
     case ${CHOICE} in
-        "1)")
+        "start")
             start
         ;;
-        "2)")
+        "stop")
             stop
         ;;
 
-        "3)")
+        "restart")
             stop
             start
         ;;
 
-        "4)")
+        "adduser")
             USERNAME=$(whiptail --inputbox "Entrez le nom d'utilisateur" --title "Choix utilisateur" 10 78 3>&1 1>&2 2>&3)
             exitstatus=$?
             if [ ${exitstatus} != 0 ]; then
@@ -232,15 +232,15 @@ function interactive {
             adduser ${USERNAME}
         ;;
 
-        "m)")
+        "maj")
             maj
         ;;
 
-        "h)")
+        "help")
             usage
         ;;
 
-        "q)") exit
+        "quit") exit
             ;;
     esac
     done
