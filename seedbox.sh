@@ -158,6 +158,11 @@ EOF
     docker exec -i pure_ftp_seedbox /bin/bash << EOF
 ( echo ${mypassword} ; echo ${mypassword} )|pure-pw useradd ${username} -f /etc/pure-ftpd/passwd/pureftpd.passwd -m -u ftpuser -d /home/ftpusers/${username}/data
 EOF
+    # On crée les répertoires
+    # Cela permet de s'assurer qu'ils ne seront pas créés par docker
+    # avec les droits root
+    mkdir -p ${CONFIG_DIR}/${username}
+    mkdir -p ${DATA_DIR}/${username}
 read -d '' RESULT << EOF
 L\'utilisateur a été créé.
 Adresse de rutorrent : https://${BASE_URL}/${username}_rutorrent/
