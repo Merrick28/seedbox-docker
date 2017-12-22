@@ -113,7 +113,7 @@ EOF
 # prend en parametre le user à rajouter
 function adduser() {
   username=$1
-  if [ -f ${username.yml} ]
+  if [ -f ${username}.yml ]
   then
     read -d '' RESULT << EOF
 #############################
