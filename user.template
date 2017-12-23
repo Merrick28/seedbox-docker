@@ -68,7 +68,7 @@ services:
       - "traefik.frontend.auth.basic={{ user }}:${passwd_{{ user }}}"
       - "traefik.frontend.entryPoints=https"
     links:
-       - rutorrent-steph:rutorrent-{{ user }}
+       - rutorrent-{{ user }}:rutorrent-{{ user }}
        - postfix:postfix
 
 ###############################################                                    
