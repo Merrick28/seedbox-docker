@@ -56,4 +56,13 @@ services:
       - OPENDKIM_DOMAINS=${BASE_URL} ${ADMIN_URL}
     volumes:
       - ${CONFIG_DIR}/postfix:/etc/opendkim/keys
+##########################################
+# Watchtower
+##########################################
+  watchtower:
+    container_name: watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    image: v2tec/watchtower
+    command: --cleanup --interval 3600
 
