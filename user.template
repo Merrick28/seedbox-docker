@@ -51,7 +51,7 @@ services:
 ################################################
 # MEDUSA
 ################################################
-  medusa:
+  medusa_{{ user }}:
     image: xataz/medusa
     volumes:
       - $DATA_DIR/{{ user }}/config/medusa:/config/Medusa
