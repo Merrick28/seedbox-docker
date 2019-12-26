@@ -35,7 +35,7 @@ function start {
 # stop
 # Arrête la seedbox
 function stop {
-  docker-compose $(for file in `ls *yml`;do echo "-f $file";done) down
+  docker-compose $(for file in `ls *yml`;do echo "-f $file";done) down --remove-orphans
 }
 
 ############################
