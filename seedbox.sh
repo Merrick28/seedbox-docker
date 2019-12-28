@@ -35,7 +35,7 @@ function start {
 # stop
 # Arrête la seedbox
 function stop {
-  docker-compose $(for file in `ls *yml`;do echo "-f $file";done) down
+  docker-compose $(for file in `ls *yml`;do echo "-f $file";done) down --remove-orphans
 }
 
 ############################
@@ -197,7 +197,7 @@ function create_admin {
   export passwd_admin=${adminpassword}
   start
   echo "Le compte admin a été créé."
-  echo "Vous devez maintenant vous connecter sur https://${ADMIN_URL}/portainer et choisir un mot de passe pour sécuriser la partie portainer"
+  echo "Vous devez maintenant vous connecter sur https://${ADMIN_URL}/portainer/ et choisir un mot de passe pour sécuriser la partie portainer"
 
 }
 function interactive {
