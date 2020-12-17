@@ -59,7 +59,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.portainer.entrypoints=https"
-      - "traefik.http.routers.portainer.rule=Host(`${ADMIN_URL}`)  && PathPrefixStrip(`/portainer`) "
+      - "traefik.http.routers.portainer.rule=Host(`portainer.sdewitte.net`) "
       - "traefik.http.routers.portainer.service=portainer-svc"
       - "traefik.http.routers.portainer.tls=true"
       - "traefik.http.services.portainer-svc.loadbalancer.server.port=9000"
