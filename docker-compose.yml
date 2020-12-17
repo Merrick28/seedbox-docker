@@ -40,11 +40,11 @@ services:
       - $CONFIG_DIR/traefik.log:/log
     labels:
       - "traefik.enable=true"
-      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https",
-      - "traefik.http.routers.http-catchall.entrypoints=http",
-      - "traefik.http.routers.http-catchall.middlewares=edirect-to-https",
-      - "traefik.http.routers.http-catchall.rule=HostRegexp(`{host:.+}`)",
-      - "traefik.http.routers.traefik.service=api@internal",
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.http-catchall.entrypoints=http"
+      - "traefik.http.routers.http-catchall.middlewares=edirect-to-https"
+      - "traefik.http.routers.http-catchall.rule=HostRegexp(`{host:.+}`)"
+      - "traefik.http.routers.traefik.service=api@internal"
       - "traefik.http.routers.traefik.entrypoints=https"
       - "traefik.http.routers.traefik.rule=Host(`${ADMIN_URL}`)"
       - "traefik.http.routers.traefik.tls=true"
