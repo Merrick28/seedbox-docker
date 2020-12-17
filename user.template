@@ -10,11 +10,14 @@ services:
     ports:
       - "{{ port }}:{{ port }}" #UserPort
     labels:
-      - "traefik.backend=rutorrent-{{ user }}"
-      - "traefik.frontend.rule=Host:${BASE_URL};PathPrefix:/{{ user }}_rutorrent"
-      - "traefik.backend.port=8080"
+      - "traefik.enable": "true"
+      - "traefik.http.routers.rutorrent-rtr.entrypoints": "https"
+      - "traefik.http.routers.rutorrent-rtr.rule": "Host(`${BASE_URL}`)"
+      - "traefik.http.routers.rutorrent-rtr.service": "rutorrent-svc"
+      - "traefik.http.routers.rutorrent-rtr.tls": "true"
+      - "traefik.http.services.rutorrent-svc.loadbalancer.server.port": "8080"
+
       - "traefik.frontend.auth.basic={{ user }}:${passwd_{{ user }}}"
-      - "traefik.frontend.entryPoints=https,http"
     environment:
       - UID=${MYUID}
       - GID=${MYGID}
