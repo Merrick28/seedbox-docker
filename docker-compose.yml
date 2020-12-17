@@ -47,9 +47,7 @@ services:
       - "traefik.http.routers.traefik.service=api@internal",
       - "traefik.http.routers.traefik.entrypoints=https"
       - "traefik.http.routers.traefik.rule=Host(`${ADMIN_URL}`)"
-      - "traefik.http.routers.traefik.service=traefik-svc"
       - "traefik.http.routers.traefik.tls=true"
-      - "traefik.http.services.traefik-svc.loadbalancer.server.port=8080"
       - "traefik.http.routers.traefik.middlewares=traefik-auth"
       - "traefik.http.middlewares.traefik-auth.basicauth.users=admin:${passwd_admin}"
     container_name: traefik
