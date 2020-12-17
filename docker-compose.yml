@@ -62,7 +62,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.portainer.entrypoints=https"
-      - "traefik.http.routers.portainer.rule=Host(`portainer.sdewitte.net`) "
+      - "traefik.http.routers.portainer.rule=Host(`${PORTAINER_URL}`) "
       - "traefik.http.routers.portainer.service=portainer-svc"
       - "traefik.http.routers.portainer.tls=true"
       - "traefik.http.services.portainer-svc.loadbalancer.server.port=9000"
@@ -96,6 +96,6 @@ services:
     container_name: watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    image: v2tec/watchtower
-    command: --cleanup --interval 3600
+    image: containrrr/watchtower
+    command: --cleanup --schedule "0 0 4 * * *"
 

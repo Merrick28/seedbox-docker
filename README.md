@@ -9,9 +9,12 @@ Passage en traefik v2.
 Si vous aviez déjà ce produit sur les versions précédentes, pour mise à jour :
 - stopper la seedbox (./seedbox.sh --stop)
 - copiez le fichier des passwords dans un endroit sur (par défaut passwd)
+- Renseignez la variable PORTAINER_URL dans le fichier vars
 - Supprimez tous les utilisateurs via la commande ./seedbox.sh en iteractif
 - Faites un git pull pour mettre le repo à jour
+- supprimez tous les yml des utilisateurs (attention, pas le docker-compose.yml)
 - Recréez tous les utilisateurs via la commande ./seedbox.sh en mode interactif
+- recopiez le fichier passwd pour récupérer les bons passwords
 - Relancez le tout avec la commande ./seedbox.sh --restart
 
 
