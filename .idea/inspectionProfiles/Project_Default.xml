@@ -1,8 +1,6 @@
 <component name="InspectionProjectProfileManager">
   <profile version="1.0">
     <option name="myName" value="Project Default" />
-    <inspection_tool class="PhpUnusedLocalVariableInspection" enabled="true" level="WARNING" enabled_by_default="true">
-      <option name="ENABLE_IN_FILE_SCOPE" value="true" />
-    </inspection_tool>
+    <inspection_tool class="Duplicates" enabled="true" level="WARNING" enabled_by_default="true" />
   </profile>
 </component>

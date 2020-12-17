@@ -3,6 +3,18 @@ Une seedbox multi utilisateur (presque) prête à lancer, avec docker-compose
 
 Tous les services sont lancés via docker, et rien n'est installé sur le serveur.
 
+# ATTENTION
+
+Passage en traefik v2.
+Si vous aviez déjà ce produit sur les versions précédentes, pour mise à jour :
+- stopper la seedbox (./seedbox.sh --stop)
+- copiez le fichier des passwords dans un endroit sur (par défaut passwd)
+- Supprimez tous les utilisateurs via la commande ./seedbox.sh en iteractif
+- Faites un git pull pour mettre le repo à jour
+- Recréez tous les utilisateurs via la commande ./seedbox.sh en mode interactif
+- Relancez le tout avec la commande ./seedbox.sh --restart
+
+
 ## Prérequis
 - une machine linux connectée à Internet, avec deux noms de domaine (un pour les services utilisateurs, un pour l'administration).
 - docker et docker-compose

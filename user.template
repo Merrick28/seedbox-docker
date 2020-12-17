@@ -10,13 +10,14 @@ services:
     ports:
       - "{{ port }}:{{ port }}" #UserPort
     labels:
-      - "traefik.enable": "true"
-      - "traefik.http.routers.rutorrent-rtr.entrypoints= "https"
-      - "traefik.http.routers.rutorrent-rtr.rule= Host(`${BASE_URL}`)  && PathPrefix(`/{{ user }}_rutorrent`) "
-      - "traefik.http.routers.rutorrent-rtr.service= rutorrent-svc"
-      - "traefik.http.routers.rutorrent-rtr.tls= true"
-      - "traefik.http.services.rutorrent-svc.loadbalancer.server.port= 8080"
-      - "traefik.http.middlewares.auth.basicauth.users={{ user }}:${passwd_{{ user }}}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.rutorrent-rtr-{{ user }}.entrypoints=https"
+      - "traefik.http.routers.rutorrent-rtr-{{ user }}.rule=Host(`${BASE_URL}`)  && PathPrefix(`/{{ user }}_rutorrent`) "
+      - "traefik.http.routers.rutorrent-rtr-{{ user }}.service=rutorrent-{{ user }}-svc"
+      - "traefik.http.routers.rutorrent-rtr-{{ user }}.tls=true"
+      - "traefik.http.services.rutorrent-{{ user }}-svc.loadbalancer.server.port=8080"
+      - "traefik.http.routers.rutorrent-rtr-{{ user }}.middlewares={{ user }}-rutorrent-auth"
+      - "traefik.http.middlewares.{{ user }}-rutorrent-auth.basicauth.users={{ user }}:${passwd_steph}"
     environment:
       - UID=${MYUID}
       - GID=${MYGID}
@@ -26,74 +27,56 @@ services:
       - $DATA_DIR/{{ user }}/data:/data 
       - $DATA_DIR/{{ user }}/config/torrent:/config
     dns: 8.8.8.8
-
-###################################
-#    SICKRAGE
-###################################
-# Dans cette image, le répertoire /downloads
-# correspond aux répertoire des torrents
-#  sickrage_{{ user }}:
-#    image: xataz/sickrage
-#    volumes: 
-#      - $DATA_DIR/{{ user }}/data:/torrents
-#      - $DATA_DIR/{{ user }}/config/sr:/config
-#    environment:
-#      - GID=${MYGID}
-#      - UID=${MYUID}
-#      - WEBROOT=/{{ user }}_sickrage
-#    labels:
-#      - "traefik.backend=sickrage-{{ user }}"
-#      - "traefik.frontend.rule=Host:${BASE_URL};PathPrefix:/{{ user }}_sickrage"
-#      - "traefik.backend.port=8081"
-#      - "traefik.frontend.auth.basic={{ user }}:${passwd_{{ user }}}" 
-#      - "traefik.frontend.entryPoints=https,http"        
-#    links:
-#       - rutorrent-{{ user }}:rutorrent-{{ user }}
-#       - postfix:postfix
-################################################
+    container_name: rutorrent-{{ user }}
+###############################################
 # MEDUSA
+###############################################
+  medusa_{{ user }}:
+    image: xataz/medusa
+    volumes:
+      - $DATA_DIR/{{ user }}/config/medusa:/config/Medusa
+      - $DATA_DIR/{{ user }}/data:/torrents
+    environment:
+      - GID=${MYGID}
+      - UID=${MYUID}
+      - MEDUSA_WEBROOT=/{{ user }}_medusa
+      - MEDUSA_TVDIRS=/torrents
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.medusa-rtr-{{ user }}.entrypoints=https"
+      - "traefik.http.routers.medusa-rtr-{{ user }}.rule=Host(`${BASE_URL}`)  && PathPrefix(`/{{ user }}_medusa`) "
+      - "traefik.http.routers.medusa-rtr-{{ user }}.service=medusa-{{ user }}-svc"
+      - "traefik.http.routers.medusa-rtr-{{ user }}.tls=true"
+      - "traefik.http.services.medusa-{{ user }}-svc.loadbalancer.server.port=8080"
+      - "traefik.http.routers.medusa-rtr-{{ user }}.middlewares={{ user }}-medusa-auth"
+      - "traefik.http.middlewares.{{ user }}-medusa-auth.basicauth.users={{ user }}:${passwd_steph}"
+    links:
+       - rutorrent-{{ user }}:rutorrent-{{ user }}
+       - postfix:postfix
 ################################################
-#  medusa_{{ user }}:
-#    image: xataz/medusa
-#    volumes:
-#      - $DATA_DIR/{{ user }}/config/medusa:/config/Medusa
-#      - $DATA_DIR/{{ user }}/data:/torrents
-#    environment:
-#      - GID=${MYGID}
-#      - UID=${MYUID}
-#      - MEDUSA_WEBROOT=/{{ user }}_medusa
-#      - MEDUSA_TVDIRS=/torrents
-#    labels:
-#      - "traefik.backend=medusa_{{ user }}"
-#      - "traefik.frontend.rule=Host:${BASE_URL};PathPrefix:/{{ user }}_medusa"
-#      - "traefik.backend.port=8080"
-#      - "traefik.frontend.auth.basic={{ user }}:${passwd_{{ user }}}"
-#      - "traefik.frontend.entryPoints=https"
-#    links:
-#       - rutorrent-{{ user }}:rutorrent-{{ user }}
-#       - postfix:postfix
-#
-################################################                                    
 ## COUCHPOTATO                                                                      
 ################################################                                    
-#  couchpotato_{{ user }}:
-#    build:
-#      context: .
-#      dockerfile: DockerFileCp
-#    volumes:
-#      - $DATA_DIR/{{ user }}/data:/torrents
-#      - $DATA_DIR/{{ user }}/config/cp:/config 
-#    labels:
-#      - "traefik.backend=couchpotato-{{ user }}"
-#      - "traefik.frontend.rule=Host:${BASE_URL};PathPrefix:/{{ user }}_couchpotato" 
-#      - "traefik.backend.port=5050"
-#      - "traefik.frontend.auth.basic={{ user }}:${passwd_{{ user }}}"
-#      - "traefik.frontend.entryPoints=https,http"
-#    links:
-#       - rutorrent-{{ user }}:rutorrent-{{ user }}
-#       - postfix:postfix
-#    environment:
-#       - UID=${MYUID}
-#       - GID=${MYGID}
-#       - WEBROOT=/{{ user }}_couchpotato
-####
+  couchpotato_{{ user }}:
+    build:
+      context: .
+      dockerfile: DockerFileCp
+    volumes:
+      - $DATA_DIR/{{ user }}/data:/torrents
+      - $DATA_DIR/{{ user }}/config/cp:/config
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.couchpotato-rtr-{{ user }}.entrypoints=https"
+      - "traefik.http.routers.couchpotato-rtr-{{ user }}.rule=Host(`${BASE_URL}`)  && PathPrefix(`/{{ user }}_couchpotato`) "
+      - "traefik.http.routers.couchpotato-rtr-{{ user }}.service=couchpotato-{{ user }}-svc"
+      - "traefik.http.routers.couchpotato-rtr-{{ user }}.tls=true"
+      - "traefik.http.services.couchpotato-{{ user }}-svc.loadbalancer.server.port=5050"
+      - "traefik.http.routers.couchpotato-rtr-{{ user }}.middlewares={{ user }}-couchpotato-auth"
+      - "traefik.http.middlewares.{{ user }}-couchpotato-auth.basicauth.users={{ user }}:${passwd_steph}"
+    links:
+       - rutorrent-{{ user }}:rutorrent-{{ user }}
+       - postfix:postfix
+    environment:
+       - UID=${MYUID}
+       - GID=${MYGID}
+       - WEBROOT=/{{ user }}_couchpotato
+

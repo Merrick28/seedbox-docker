@@ -39,11 +39,14 @@ services:
       - $CONFIG_DIR/certs:/certs
       - $CONFIG_DIR/traefik.log:/log
     labels:
-      - "traefik.backend=traefik"
-      - "traefik.frontend.rule=Host:${ADMIN_URL}"
-      - "traefik.backend.port=8080"
-      - "traefik.frontend.auth.basic=admin:${passwd_admin}"
-      - "traefik.frontend.entryPoints=https,http"   
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.entrypoints=https"
+      - "traefik.http.routers.traefik.rule=Host(`${ADMIN_URL}`)"
+      - "traefik.http.routers.traefik.service=traefik-svc"
+      - "traefik.http.routers.traefik.tls=true"
+      - "traefik.http.services.traefik-svc.loadbalancer.server.port=8080"
+      - "traefik.http.routers.traefik.middlewares=traefik-auth"
+      - "traefik.http.middlewares.traefik-auth.basicauth.users=admin:${passwd_admin}"
     container_name: traefik
 ##########################################
 # Portainer 
@@ -54,10 +57,13 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - $CONFIG_DIR/portainer:/data
     labels:
-      - "traefik.backend=portainer"
-      - "traefik.frontend.rule=Host:${ADMIN_URL};PathPrefixStrip:/portainer"
-      - "traefik.backend.port=9000"
-      - "traefik.frontend.entryPoints=https,http"    
+      - "traefik.enable=true"
+      - "traefik.http.routers.portainer.entrypoints=https"
+      - "traefik.http.routers.portainer.rule=Host(`${ADMIN_URL}`)  && PathPrefixStrip(`/portainer`) "
+      - "traefik.http.routers.portainer.service=portainer-svc"
+      - "traefik.http.routers.portainer.tls=true"
+      - "traefik.http.services.portainer-svc.loadbalancer.server.port=9000"
+
 ###########################################
 # FTP
 ###########################################
