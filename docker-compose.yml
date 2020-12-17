@@ -4,16 +4,40 @@ services:
 #  TRAEFIK
 ###################################
   traefik:
-    image: traefik:v1.7.16
-    command: --web --docker --docker.domain=docker.localhost --logLevel=DEBUG --entryPoints='Name:https Address::443 TLS' --entryPoints='Name:http Address::80  Redirect.EntryPoint:https' --acme.entrypoint=https --acme=true --acme.domains="${BASE_URL}, ${ADMIN_URL}" --acme.email="${MAIL_ADDRESS}" --acme.ondemand=true acme.onhostrule=true --acme.storage=/certs/acme.json --acme.httpchallenge.entrypoint=http
+    image: traefik:chevrotin
+    command: >
+      --global.checkNewVersion=true
+      --global.checkNewVersion=true
+      --global.sendAnonymousUsage=true
+      --entryPoints.http.address=:80
+      --entryPoints.https.address=:443
+      --entryPoints.traefik.address=:8080
+      --api=true
+      --log=true
+      --log.level=DEBUG
+      --accessLog=true
+      --accessLog.filePath=/log/traefik.log
+      --accessLog.bufferingSize=100
+      --accessLog.filters.statusCodes=400-499
+      --providers.docker=true
+      --providers.docker.endpoint=unix:///var/run/docker.sock
+      --providers.docker.exposedByDefault=false
+      --providers.docker.network=traefik_proxy
+      --providers.docker.swarmMode=false
+      --providers.file.directory=/rules
+      --providers.file.watch=true
+      --certificatesResolvers.letsencrypt.acme.caServer=https://acme-staging-v02.api.letsencrypt.org/directory
+      --certificatesResolvers.letsencrypt.acme.email='${MAIL_ADDRESS}'
+      --certificatesResolvers.letsencrypt.acme.storage=/acme.json
+      --certificatesresolvers.letsencrypt.acme.tlschallenge=true
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /dev/null:/traefik.toml
       - $CONFIG_DIR/traefik:/etc/traefik/acme
       - $CONFIG_DIR/certs:/certs
+      - $CONFIG_DIR/traefik.log:/log
     labels:
       - "traefik.backend=traefik"
       - "traefik.frontend.rule=Host:${ADMIN_URL}"
