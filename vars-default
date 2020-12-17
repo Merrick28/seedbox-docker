@@ -4,9 +4,11 @@
 # Url de base
 # Les sites seront accessibles par
 # https://BASE_URL/xxx
-export BASE_URL=sb2.sdewitte.net
+export BASE_URL=seedbox.mondomaine.net
 # URL pour Traefik
-export ADMIN_URL=traefik.sdewitte.net
+export ADMIN_URL=traefik.mondomaine.net
+# URL pour Portainer
+export PORTAINER_URL=portainer.mondomaine.net
 # Fichier de password
 export PASSWD_FILE=./passwd
 # Adresse mail de contact

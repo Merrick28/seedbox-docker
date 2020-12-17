@@ -16,7 +16,7 @@ Si vous aviez déjà ce produit sur les versions précédentes, pour mise à jou
 
 
 ## Prérequis
-- une machine linux connectée à Internet, avec deux noms de domaine (un pour les services utilisateurs, un pour l'administration).
+- une machine linux connectée à Internet, avec trois sous domaines (un pour les services utilisateurs, un pour traefik, un pour portainer).
 - docker et docker-compose
 - assez d'espace disque
 - un utilisateur (non root) faisant partie du groupe docker

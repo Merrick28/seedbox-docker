@@ -53,13 +53,12 @@ services:
     links:
        - rutorrent-{{ user }}:rutorrent-{{ user }}
        - postfix:postfix
+    container_name: medusa-{{ user }}
 ################################################
 ## COUCHPOTATO                                                                      
 ################################################                                    
   couchpotato_{{ user }}:
-    build:
-      context: .
-      dockerfile: DockerFileCp
+    image: xataz/couchpotato
     volumes:
       - $DATA_DIR/{{ user }}/data:/torrents
       - $DATA_DIR/{{ user }}/config/cp:/config
@@ -79,4 +78,4 @@ services:
        - UID=${MYUID}
        - GID=${MYGID}
        - WEBROOT=/{{ user }}_couchpotato
-
+    container_name: couchpotato-{{ user }}
