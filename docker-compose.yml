@@ -4,7 +4,7 @@ services:
 #  TRAEFIK
 ###################################
   traefik:
-    image: traefik:chevrotin
+    image: traefik:latest
     command: >
       --global.checkNewVersion=true
       --global.checkNewVersion=true
@@ -42,7 +42,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
       - "traefik.http.routers.http-catchall.entrypoints=http"
-      - "traefik.http.routers.http-catchall.middlewares=edirect-to-https"
+      - "traefik.http.routers.http-catchall.middlewares=redirect-to-https"
       - "traefik.http.routers.http-catchall.rule=HostRegexp(`{host:.+}`)"
       - "traefik.http.routers.traefik.service=api@internal"
       - "traefik.http.routers.traefik.entrypoints=https"
