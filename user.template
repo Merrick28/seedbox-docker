@@ -12,7 +12,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.rutorrent-rtr-{{ user }}.entrypoints=https"
-      - "traefik.http.routers.rutorrent-rtr-{{ user }}.rule=Host(`${BASE_URL}`)  && PathPrefixStrip(`/{{ user }}_rutorrent`) "
+      - "traefik.http.routers.rutorrent-rtr-{{ user }}.rule=Host(`${BASE_URL}`)  && PathPrefix(`/{{ user }}_rutorrent`) "
       - "traefik.http.routers.rutorrent-rtr-{{ user }}.service=rutorrent-{{ user }}-svc"
       - "traefik.http.routers.rutorrent-rtr-{{ user }}.tls=true"
       - "traefik.http.services.rutorrent-{{ user }}-svc.loadbalancer.server.port=8080"
