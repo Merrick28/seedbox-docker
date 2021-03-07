@@ -17,7 +17,7 @@ services:
       - "traefik.http.routers.rutorrent-rtr-{{ user }}.tls=true"
       - "traefik.http.services.rutorrent-{{ user }}-svc.loadbalancer.server.port=8080"
       - "traefik.http.routers.rutorrent-rtr-{{ user }}.middlewares={{ user }}-rutorrent-auth"
-      - "traefik.http.middlewares.{{ user }}-rutorrent-auth.basicauth.users={{ user }}:${passwd_user}"
+      - "traefik.http.middlewares.{{ user }}-rutorrent-auth.basicauth.users={{ user }}:${passwd_{{ user }}}"
     environment:
       - UID=${MYUID}
       - GID=${MYGID}
@@ -49,7 +49,7 @@ services:
       - "traefik.http.routers.medusa-rtr-{{ user }}.tls=true"
       - "traefik.http.services.medusa-{{ user }}-svc.loadbalancer.server.port=8080"
       - "traefik.http.routers.medusa-rtr-{{ user }}.middlewares={{ user }}-medusa-auth"
-      - "traefik.http.middlewares.{{ user }}-medusa-auth.basicauth.users={{ user }}:${passwd_user}"
+      - "traefik.http.middlewares.{{ user }}-medusa-auth.basicauth.users={{ user }}:${passwd_{{ user }}}"
     links:
        - rutorrent-{{ user }}:rutorrent-{{ user }}
        - postfix:postfix
@@ -70,7 +70,7 @@ services:
       - "traefik.http.routers.couchpotato-rtr-{{ user }}.tls=true"
       - "traefik.http.services.couchpotato-{{ user }}-svc.loadbalancer.server.port=5050"
       - "traefik.http.routers.couchpotato-rtr-{{ user }}.middlewares={{ user }}-couchpotato-auth"
-      - "traefik.http.middlewares.{{ user }}-couchpotato-auth.basicauth.users={{ user }}:${passwd_user}"
+      - "traefik.http.middlewares.{{ user }}-couchpotato-auth.basicauth.users={{ user }}:${passwd_{{ user }}}"
     links:
        - rutorrent-{{ user }}:rutorrent-{{ user }}
        - postfix:postfix
