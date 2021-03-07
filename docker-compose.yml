@@ -67,6 +67,30 @@ services:
       - "traefik.http.routers.portainer.tls=true"
       - "traefik.http.services.portainer-svc.loadbalancer.server.port=9000"
 
+#########################################
+# JellyFin
+#########################################
+  jellyfin:
+      image: jellyfin/jellyfin
+      container_name: jellyfin
+      restart: unless-stopped
+      network_mode: "host"
+      environment:
+        - PUID=1000
+        - PGID=1000
+        - TZ=Europe/Paris
+      volumes:
+        - /home/jellyfin/config:/config
+        - /home/jellyfin/cache:/cache
+        - /home:/home
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.jellyfin-router.entrypoints=https"
+        - "traefik.http.routers.jellyfin-router.service=jellyfin-svc"
+        - "traefik.http.routers.jellyfin-router.rule=Host(`${JELLYFIN_URL}`) "
+        - "traefik.http.routers.jellyfin-router.tls=true"
+        - "traefik.http.services.jellyfin-svc.loadbalancer.server.port=8096"
+
 ###########################################
 # FTP
 ###########################################
