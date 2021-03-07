@@ -36,6 +36,7 @@ Ce projet utilise les images suivantes :
 - [traefik](https://traefik.io/) : pour gérer les I/O web
 - [mondedie/rutorrent](https://hub.docker.com/r/mondedie/rutorrent) : rtorrent et rutorrent
 - [xataz/medusa](https://hub.docker.com/r/xataz/medusa/) : medusa
+- [jellyfin/jellyfin](https://hub.docker.com/r/jellyfin/jellyfin) : JellyFin, serveur multimédia opensource basé sur Emby.
 - [xataz/couchpotato](https://hub.docker.com/r/xataz/couchpotato/) : couchpotato (l'image est modifiée pour ajouter unrar)
 - [linuxserver/plex](https://hub.docker.com/r/linuxserver/plex) : Plex, serveur multimédia pour lire contenu téléchargé
 - [portainer/portainer](https://hub.docker.com/r/portainer/portainer/) : GUI pour manipuler les dockers
