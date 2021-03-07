@@ -34,10 +34,10 @@ Des fichiers docker-compose vont faire un pull de toutes les images nécessaires
 
 Ce projet utilise les images suivantes :
 - [traefik](https://traefik.io/) : pour gérer les I/O web
-- [xataz/rtorrent-rutorrent](https://hub.docker.com/r/xataz/rtorrent-rutorrent/) : rtorrent et rutorrent
-- [xataz/sickrage](https://hub.docker.com/r/xataz/sickrage/) : sickrage
+- [mondedie/rutorrent](https://hub.docker.com/r/mondedie/rutorrent) : rtorrent et rutorrent
 - [xataz/medusa](https://hub.docker.com/r/xataz/medusa/) : medusa
 - [xataz/couchpotato](https://hub.docker.com/r/xataz/couchpotato/) : couchpotato (l'image est modifiée pour ajouter unrar)
+- [linuxserver/plex](https://hub.docker.com/r/linuxserver/plex) : Plex, serveur multimédia pour lire contenu téléchargé
 - [portainer/portainer](https://hub.docker.com/r/portainer/portainer/) : GUI pour manipuler les dockers
 - [stilliard/pure-ftpd:hardened](https://github.com/stilliard/docker-pure-ftpd) pour les accès ftp
 - [mwader/postfix-relay](https://hub.docker.com/r/mwader/postfix-relay/) pour l'envoi des mails en utilisant le DKIM
