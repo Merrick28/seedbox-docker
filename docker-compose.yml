@@ -76,8 +76,8 @@ services:
       restart: unless-stopped
       network_mode: "host"
       environment:
-        - PUID=1000
-        - PGID=1000
+        - PUID=${MYUID}
+        - PGID=${MYGID}
         - TZ=Europe/Paris
       volumes:
         - $CONFIG_DIR/jellyfin/config:/config
