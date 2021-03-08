@@ -67,6 +67,29 @@ services:
       - "traefik.http.routers.portainer.tls=true"
       - "traefik.http.services.portainer-svc.loadbalancer.server.port=9000"
 
+#########################################
+# Plex
+#########################################
+  plex:
+    image: linuxserver/plex:latest
+    container_name: plex
+    restart: unless-stopped
+    network_mode: host # Permet l'accès depuis l'exterieur
+    environment:
+      - PUID=${MYUID}
+      - PGID=${MYGID}
+      - TZ=Europe/Paris
+    volumes:
+      - $CONFIG_DIR/plex/config:/config
+      - $DATA_DIR:/home
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.plex-router.entrypoints=https"
+      - "traefik.http.routers.plex-router.service=plex-svc"
+      - "traefik.http.routers.plex-router.rule=Host(`${PLEX_URL}`) "
+      - "traefik.http.routers.plex-router.tls=true"
+      - "traefik.http.services.plex-svc.loadbalancer.server.port=32400"
+ 
 ###########################################
 # FTP
 ###########################################
