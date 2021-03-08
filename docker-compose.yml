@@ -80,9 +80,9 @@ services:
         - PGID=1000
         - TZ=Europe/Paris
       volumes:
-        - /home/jellyfin/config:/config
-        - /home/jellyfin/cache:/cache
-        - /home:/home
+        - $CONFIG_DIR/jellyfin/config:/config
+        - $CONFIG_DIR/jellyfin/cache:/cache
+        - $DATA_DIR:/home
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.jellyfin-router.entrypoints=https"
