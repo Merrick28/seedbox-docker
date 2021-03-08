@@ -9,6 +9,12 @@ export BASE_URL=seedbox.mondomaine.net
 export ADMIN_URL=traefik.mondomaine.net
 # URL pour Portainer
 export PORTAINER_URL=portainer.mondomaine.net
+
+# URL pour JellyFin
+export JELLYFIN_URL=jellyfin.mondomaine.net
+
+# URL pour PLEX ( ou accès depuis plex.tv )
+export PLEX_URL=plex.mondomaine.net
 # Fichier de password
 export PASSWD_FILE=./passwd
 # Adresse mail de contact

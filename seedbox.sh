@@ -166,7 +166,6 @@ EOF
 read -d '' RESULT << EOF
 L\'utilisateur a été créé.
 Adresse de rutorrent : https://${BASE_URL}/${username}_rutorrent/
-Adresse de sickrage : https://${BASE_URL}/${username}_sickrage/
 Adresse de medusa : https://${BASE_URL}/${username}_medusa/
 Adresse de couchpotato : https://${BASE_URL}/${username}_couchpotato
 EOF
