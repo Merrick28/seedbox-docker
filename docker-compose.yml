@@ -76,12 +76,12 @@ services:
     restart: unless-stopped
     network_mode: host # Permet l'accès depuis l'exterieur
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PUID=${MYUID}
+      - PGID=${MYGID}
       - TZ=Europe/Paris
     volumes:
-      - /home/plex/config:/config
-      - /home:/home
+      - $CONFIG_DIR/plex/config:/config
+      - $DATA_DIR:/home
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.plex-router.entrypoints=https"
