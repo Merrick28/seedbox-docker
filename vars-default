@@ -13,7 +13,6 @@ export NETDATA_URL=netdata-server.domain.fr
 # BASE_URL des applications utilisateur
 export RUTORRENT_BASE_URL=rutorrent
 export MEDUSA_BASE_URL=medusa
-export COUCHPOTATO_BASE_URL=couchpotato
 export RADARR_BASE_URL=radarr
 export LIDARR_BASE_URL=lidarr
 export JACKETT_BASE_URL=jackett
@@ -22,8 +21,6 @@ export SONARR_BASE_URL=sonarr
 export FLOOD_BASE_URL=flood
 export FILEBROWSER_BASE_URL=filebrowser
 export NEXTCLOUD_BASE_URL=nextcloud
-export COLLABORA_BASE_URL=collabora
-export DILLINGER_BASE_URL=dillinger
 export FILERUN_BASE_URL=filerun
 export SABNZBD_BASE_URL=sabnzbd
 export PYLOAD_BASE_URL=pyload
