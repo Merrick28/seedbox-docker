@@ -1,0 +1,32 @@
+# start rutorrent                             
+  rutorrent_{{ user }}:
+    image: mondedie/rutorrent:latest
+    container_name: rutorrent_{{ user }}
+    restart: unless-stopped
+    labels:
+      - "user={{ user }}"
+      - "app=rutorrent"
+      - "app.user=rutorrent_{{ user }}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.rutorrent_{{ user }}-router.entrypoints=websecure"
+      - "traefik.http.routers.rutorrent_{{ user }}-router.rule=Host(`{{ user }}-${RUTORRENT_BASE_URL}-${BASE_URL}`)"
+      - "traefik.http.routers.rutorrent_{{ user }}-router.service=rutorrent_{{ user }}-service"
+      - "traefik.http.routers.rutorrent_{{ user }}-router.tls=true"
+      - "traefik.http.services.rutorrent_{{ user }}-service.loadbalancer.server.port=8080"
+      - "traefik.http.routers.rutorrent_{{ user }}-router.middlewares={{ user }}_rutorrent-auth"
+      - "traefik.http.middlewares.{{ user }}_rutorrent-auth.basicauth.users={{ user }}:${passwd_{{ user }}}"
+    volumes:
+      - $DATA_DIR/{{ user }}/data:/data/downloads
+      - $DATA_DIR/{{ user }}/config/torrent:/config
+      - $DATA_DIR/{{ user }}/config/torrent/run/rtorrent:/run/rtorrent
+    environment:
+      - UID=${MYUID}
+      - GID=${APACHEGID}
+      - TZ=${TZ}
+      - PORT_RTORRENT={{ port }}
+    ports:
+      - "{{ port }}:{{ port }}" #UserPort
+    dns: 8.8.8.8
+    networks:
+      - proxy
+# end rutorrent

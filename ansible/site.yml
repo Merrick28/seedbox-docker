@@ -1,0 +1,7 @@
+---
+- name: Install DNS Routing
+  hosts: all
+  vars_files: 
+    - group_vars/all.yml
+  roles:
+    - common

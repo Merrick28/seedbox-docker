@@ -1,0 +1,14 @@
+version: '3.9'
+services:
+
+# start services
+# end services
+
+# start networks
+
+networks:
+  proxy:
+    external:
+      name: traefik_proxy
+
+# end networks

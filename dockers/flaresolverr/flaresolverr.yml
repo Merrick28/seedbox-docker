@@ -1,0 +1,25 @@
+# start flaresolverr
+  flaresolverr_{{ user }}:
+    image: flaresolverr/flaresolverr:latest
+    container_name: flaresolverr_{{ user }}
+    restart: unless-stopped
+    labels:
+      - "user={{ user }}"
+      - "app=flaresolverr"
+      - "app.user=flaresolverr_{{ user }}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.flaresolverr_{{ user }}-router.entrypoints=websecure"
+      - "traefik.http.routers.flaresolverr_{{ user }}-router.rule=Host(`{{ user }}-${FLARESOLVERR_BASE_URL}-${BASE_URL}`)"
+      - "traefik.http.routers.flaresolverr_{{ user }}-router.service=flaresolverr_{{ user }}-service"
+      - "traefik.http.routers.flaresolverr_{{ user }}-router.tls=true"
+      - "traefik.http.services.flaresolverr_{{ user }}-service.loadbalancer.server.port=8191"
+    volumes:
+      - $DATA_DIR/{{ user }}/config/flaresolverr:/config
+    environment:
+      - PUID=${MYUID}
+      - PGID=${APACHEGID}
+      - TZ=${TZ}
+      - CAPTCHA_SOLVER=hcaptcha-solver
+    networks:
+      - proxy
+# end flaresolverr

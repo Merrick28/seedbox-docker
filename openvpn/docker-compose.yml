@@ -1,0 +1,17 @@
+version: '3.9'
+services:
+  openvpn:
+    cap_add:
+     - NET_ADMIN
+    image: kylemanna/openvpn
+    container_name: openvpn
+    ports:
+     - "1194:1194/udp"
+    restart: unless-stopped
+    volumes:
+     - ${CONFIG_DIR}/openvpn/openvpn-data:/etc/openvpn
+    environment:
+        - PUID=${MYUID}
+        - PGID=${MYGID}
+        - TZ=${TZ}
+

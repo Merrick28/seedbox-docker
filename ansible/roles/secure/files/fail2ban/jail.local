@@ -1,0 +1,15 @@
+[sshd]
+enabled = true
+port = ssh, 2222
+
+[sshd-ddos]
+enabled = true
+
+[ftp]
+enabled = true
+maxretry = 5
+
+[default]
+maxretry = 3
+findtime = 600
+bantime = 600

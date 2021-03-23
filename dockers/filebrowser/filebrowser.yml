@@ -1,0 +1,27 @@
+# start filebrowser                             
+  filebrowser_{{ user }}:
+    image: filebrowser/filebrowser:latest
+    user: ${MYUID}:${MYGID}
+    container_name: filebrowser_{{ user }}
+    command: --username {{ user }} --password '{{ filemanager_password }}'
+    restart: unless-stopped
+    labels:
+      - "user={{ user }}"
+      - "app=filebrowser"
+      - "app.user=filebrowser_{{ user }}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.filebrowser_{{ user }}-router.entrypoints=websecure"
+      - "traefik.http.routers.filebrowser_{{ user }}-router.rule=Host(`{{ user }}-${FILEBROWSER_BASE_URL}-${BASE_URL}`)"
+      - "traefik.http.routers.filebrowser_{{ user }}-router.service=filebrowser_{{ user }}-service"
+      - "traefik.http.routers.filebrowser_{{ user }}-router.tls=true"
+      - "traefik.http.services.filebrowser_{{ user }}-service.loadbalancer.server.port=80"
+    volumes:
+      - $DATA_DIR/{{ user }}/data:/srv
+      - $DATA_DIR/{{ user }}/config/filebrowser/database.db:/database.db
+    environment:
+      - PUID=${MYUID}
+      - PGID=${APACHEGID}
+      - TZ=${TZ}
+    networks:
+      - proxy
+# end filebrowser

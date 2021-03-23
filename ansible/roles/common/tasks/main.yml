@@ -1,0 +1,37 @@
+---
+- name: Create {{ HOSTNAME }}.{{ ZONE_DOMAIN }} A record to point to {{ SERVER_IPV4 }}
+  cloudflare_dns:
+    zone: "{{ ZONE_DOMAIN }}"
+    record: "{{ HOSTNAME }}"
+    type: A
+    value: "{{ SERVER_IPV4 }}"
+    proxied: yes
+    account_email: "{{ CF_API_EMAIL }}"
+    account_api_token: "d7c22b4a0cda9e0e6277820457c3fe3b86c0d"
+  register: record
+  when: username is not defined or application is not defined 
+
+- name: Create record for portainer and traefik as CNAME and proxy through Cloudflare's network
+  cloudflare_dns:
+    zone: "{{ ZONE_DOMAIN }}"
+    type: CNAME
+    record: "{{ item.name }}"
+    value: "{{ BASE_URL }}"
+    account_email: "{{ CF_API_EMAIL }}"
+    account_api_token: "d7c22b4a0cda9e0e6277820457c3fe3b86c0d"
+    state: present
+    proxied: "{{ item.proxied }}"
+  loop: "{{ CREATE_CNAME_FOR }}"
+  when: username is not defined or application is not defined
+
+- name: Create record for {{ username }} as CNAME and proxy through Cloudflare's network
+  cloudflare_dns:
+    zone: "{{ ZONE_DOMAIN }}"
+    type: CNAME
+    record: "{{ username }}-{{ application }}-{{ HOSTNAME }}"
+    value: "{{ BASE_URL }}"
+    account_email: "{{ CF_API_EMAIL }}"
+    account_api_token: "d7c22b4a0cda9e0e6277820457c3fe3b86c0d"
+    state: "{{ state }}"
+    proxied: yes
+  when: username is defined and application is defined and state is defined

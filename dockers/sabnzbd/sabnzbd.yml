@@ -1,0 +1,29 @@
+# start sabnzbd
+  sabnzbd_{{ user }}:
+    image: sabnzbd/sabnzbd:latest
+    container_name: sabnzbd_{{ user }}
+    hostname: "{{ user }}-${SABNZBD_BASE_URL}-${BASE_URL}"
+    restart: unless-stopped
+    volumes:
+      - $DATA_DIR/{{ user }}/data:/data/downloads
+      - $DATA_DIR/{{ user }}/config/sabnzbd:/datadir
+    labels:
+      - "user={{ user }}"
+      - "app=sabnzbd"
+      - "app.user=sabnzbd_{{ user }}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.sabnzbd_{{ user }}-router.entrypoints=websecure"
+      - "traefik.http.routers.sabnzbd_{{ user }}-router.rule=Host(`{{ user }}-${SABNZBD_BASE_URL}-${BASE_URL}`)"
+      - "traefik.http.routers.sabnzbd_{{ user }}-router.service=sabnzbd_{{ user }}-service"
+      - "traefik.http.routers.sabnzbd_{{ user }}-router.tls=true"
+      - "traefik.http.services.sabnzbd_{{ user }}-service.loadbalancer.server.port=8080"
+      - "traefik.http.routers.sabnzbd_{{ user }}-router.middlewares={{ user }}_sabnzbd-auth"
+      - "traefik.http.middlewares.{{ user }}_sabnzbd-auth.basicauth.users={{ user }}:${passwd_{{ user }}}"
+    environment:
+      - SABNZBD_UID=${MYUID}
+      - SABNZBD_GID=${APACHEGID}
+      - TZ=${TZ}
+      - HOST_WHITELIST_ENTRIES={{ user }}-${SABNZBD_BASE_URL}-${BASE_URL}
+    networks:
+      - proxy
+# end sabnzbd

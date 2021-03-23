@@ -1,9 +1,4 @@
 passwd
-steph.yml
-specific-steph.yml
 vars
-seedbox-docker.pid
-
-seedbox-docker\.sublime-project
-
-seedbox-docker\.sublime-workspace
+ansible/group_vars/all.yml
+sftp

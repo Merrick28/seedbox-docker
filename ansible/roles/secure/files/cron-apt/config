@@ -1,0 +1,4 @@
+APTCOMMAND=/usr/bin/aptitude
+OPTIONS="-o quiet=1 -o Dir::Etc::SourceList=/etc/apt/security.sources.list -o APT::Get::List-Cleanup=false -o Dir::Etc::SourceParts=\"/dev/null\""
+MAILTO="postmaster@sdedikool.me"
+MAILON="upgrade"

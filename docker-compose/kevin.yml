@@ -1,0 +1,149 @@
+version: '3.9'
+services:
+
+# start services
+# start pyload
+  pyload_kevin:
+    image: linuxserver/pyload:latest
+    container_name: pyload_kevin
+    restart: unless-stopped
+    volumes:
+      - $DATA_DIR/kevin/data:/downloads
+      - $DATA_DIR/kevin/config/pyload:/config
+    labels:
+      - "user=kevin"
+      - "app=pyload"
+      - "app.user=pyload_kevin"
+      - "traefik.enable=true"
+      - "traefik.http.routers.pyload_kevin-router.entrypoints=websecure"
+      - "traefik.http.routers.pyload_kevin-router.rule=Host(`kevin-${PYLOAD_BASE_URL}-${BASE_URL}`)"
+      - "traefik.http.routers.pyload_kevin-router.service=pyload_kevin-service"
+      - "traefik.http.routers.pyload_kevin-router.tls=true"
+      - "traefik.http.services.pyload_kevin-service.loadbalancer.server.port=8000"
+      - "traefik.http.routers.pyload_kevin-router.middlewares=kevin_pyload-auth"
+      - "traefik.http.middlewares.kevin_pyload-auth.basicauth.users=kevin:${passwd_kevin}"
+    environment:
+      - PUID=${MYUID}
+      - PGID=${APACHEGID}
+      - TZ=${TZ}
+    networks:
+      - proxy
+# end pyload
+# start filerun
+  filerun_db_kevin:
+    image: mariadb:10.1
+    container_name: filerun_db_kevin
+    restart: unless-stopped
+    labels:
+      - "user=kevin"
+      - "app=filerun_db"
+      - "app.user=filerun_db_kevin"
+    volumes:
+      - $DATA_DIR/kevin/config/filerun/db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${passwd_kevin}
+      - MYSQL_USER=kevin
+      - MYSQL_PASSWORD=${passwd_kevin}
+      - MYSQL_DATABASE=kevin
+    networks:
+      - proxy
+
+  filerun_kevin:
+    image: afian/filerun:libreoffice
+    container_name: filerun_kevin
+    restart: unless-stopped
+    labels:
+      - "user=kevin"
+      - "app=filerun"
+      - "app.user=filerun_kevin"
+      - "traefik.enable=true"
+      - "traefik.http.routers.filerun_kevin-router.entrypoints=websecure"
+      - "traefik.http.routers.filerun_kevin-router.rule=Host(`kevin-${FILERUN_BASE_URL}-${BASE_URL}`)"
+      - "traefik.http.routers.filerun_kevin-router.service=filerun_kevin-service"
+      - "traefik.http.routers.filerun_kevin-router.tls=true"
+      - "traefik.http.services.filerun_kevin-service.loadbalancer.server.port=80"
+    volumes:
+      - $DATA_DIR/kevin/data:/user-files
+      - $DATA_DIR/kevin/config/filerun/html:/var/www/html
+    environment:
+      - FR_DB_HOST=filerun_db_kevin
+      - FR_DB_PORT=3306
+      - FR_DB_NAME=kevin
+      - FR_DB_USER=kevin
+      - FR_DB_PASS=${passwd_kevin}
+      - APACHE_RUN_USER=${USER}
+      - APACHE_RUN_USER_ID=${MYUID}
+      - APACHE_RUN_GROUP=www-data
+      - APACHE_RUN_GROUP_ID=${APACHEGID}
+    networks:
+      - proxy
+# end filerun
+# start filebrowser                             
+  filebrowser_kevin:
+    image: filebrowser/filebrowser:latest
+    user: ${MYUID}:${MYGID}
+    container_name: filebrowser_kevin
+    command: --username kevin --password '$$2a$$10$$dwy0ASsgx6RBpM5Z1T6s9efWRX6i94Yh7WKb1wfZGWQjPmxIKk9g.'
+    restart: unless-stopped
+    labels:
+      - "user=kevin"
+      - "app=filebrowser"
+      - "app.user=filebrowser_kevin"
+      - "traefik.enable=true"
+      - "traefik.http.routers.filebrowser_kevin-router.entrypoints=websecure"
+      - "traefik.http.routers.filebrowser_kevin-router.rule=Host(`kevin-${FILEBROWSER_BASE_URL}-${BASE_URL}`)"
+      - "traefik.http.routers.filebrowser_kevin-router.service=filebrowser_kevin-service"
+      - "traefik.http.routers.filebrowser_kevin-router.tls=true"
+      - "traefik.http.services.filebrowser_kevin-service.loadbalancer.server.port=80"
+    volumes:
+      - $DATA_DIR/kevin/data:/srv
+      - $DATA_DIR/kevin/config/filebrowser/database.db:/database.db
+    environment:
+      - PUID=${MYUID}
+      - PGID=${APACHEGID}
+      - TZ=${TZ}
+    networks:
+      - proxy
+# end filebrowser
+# start rutorrent                             
+  rutorrent_kevin:
+    image: mondedie/rutorrent:latest
+    container_name: rutorrent_kevin
+    restart: unless-stopped
+    labels:
+      - "user=kevin"
+      - "app=rutorrent"
+      - "app.user=rutorrent_kevin"
+      - "traefik.enable=true"
+      - "traefik.http.routers.rutorrent_kevin-router.entrypoints=websecure"
+      - "traefik.http.routers.rutorrent_kevin-router.rule=Host(`kevin-${RUTORRENT_BASE_URL}-${BASE_URL}`)"
+      - "traefik.http.routers.rutorrent_kevin-router.service=rutorrent_kevin-service"
+      - "traefik.http.routers.rutorrent_kevin-router.tls=true"
+      - "traefik.http.services.rutorrent_kevin-service.loadbalancer.server.port=8080"
+      - "traefik.http.routers.rutorrent_kevin-router.middlewares=kevin_rutorrent-auth"
+      - "traefik.http.middlewares.kevin_rutorrent-auth.basicauth.users=kevin:${passwd_kevin}"
+    volumes:
+      - $DATA_DIR/kevin/data:/data/downloads
+      - $DATA_DIR/kevin/config/torrent:/config
+      - $DATA_DIR/kevin/config/torrent/run/rtorrent:/run/rtorrent
+    environment:
+      - UID=${MYUID}
+      - GID=${APACHEGID}
+      - TZ=${TZ}
+      - PORT_RTORRENT=45001
+    ports:
+      - "45001:45001" #UserPort
+    dns: 8.8.8.8
+    networks:
+      - proxy
+# end rutorrent
+# end services
+
+# start networks
+
+networks:
+  proxy:
+    external:
+      name: traefik_proxy
+
+# end networks

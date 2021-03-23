@@ -1,0 +1,28 @@
+# start flood                             
+  flood_{{ user }}:
+    image: jesec/flood:latest
+    user: ${MYUID}:${APACHEGID}
+    container_name: flood_{{ user }}
+    hostname: flood
+    restart: unless-stopped
+    labels:
+      - "user={{ user }}"
+      - "app=flood"
+      - "app.user=flood_{{ user }}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.flood_{{ user }}-router.entrypoints=websecure"
+      - "traefik.http.routers.flood_{{ user }}-router.rule=Host(`{{ user }}-${FLOOD_BASE_URL}-${BASE_URL}`)"
+      - "traefik.http.routers.flood_{{ user }}-router.service=flood_{{ user }}-service"
+      - "traefik.http.routers.flood_{{ user }}-router.tls=true"
+      - "traefik.http.services.flood_{{ user }}-service.loadbalancer.server.port=3001"
+    volumes:
+      - $DATA_DIR/{{ user }}/data:/data/downloads
+      - $DATA_DIR/{{ user }}/config/torrent:/config
+      - $DATA_DIR/{{ user }}/config/torrent/run/rtorrent:/config/.local/share/rtorrent/
+    command: --port 3001 --allowedpath /data/downloads
+    environment:
+      - TZ=${TZ}
+      - HOME=/config
+    networks:
+      - proxy
+# end flood

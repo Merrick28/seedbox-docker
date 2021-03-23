@@ -1,0 +1,25 @@
+# start radarr                              
+  radarr_{{ user }}:
+    image: linuxserver/radarr:latest
+    container_name: radarr_{{ user }}
+    restart: unless-stopped
+    volumes:
+      - $DATA_DIR/{{ user }}/data:/data/downloads
+      - $DATA_DIR/{{ user }}/config/radarr:/config
+    labels:
+      - "user={{ user }}"
+      - "app=radarr"
+      - "app.user=radarr_{{ user }}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.radarr_{{ user }}-router.entrypoints=websecure"
+      - "traefik.http.routers.radarr_{{ user }}-router.rule=Host(`{{ user }}-${RADARR_BASE_URL}-${BASE_URL}`)"
+      - "traefik.http.routers.radarr_{{ user }}-router.service=radarr_{{ user }}-service"
+      - "traefik.http.routers.radarr_{{ user }}-router.tls=true"
+      - "traefik.http.services.radarr_{{ user }}-service.loadbalancer.server.port=7878"
+    environment:
+      - PUID=${MYUID}
+      - PGID=${APACHEGID}
+      - TZ=${TZ}
+    networks:
+      - proxy
+# end radarr
