@@ -74,8 +74,11 @@ la commande `docker-compose -v` doit vous renvoyer la version de Docker-Compose.
 # Ajout de notre utilisateur au groupe Docker
 `usermod -aG docker monuser`
 
-# Installation des paquets pour Debian 10
-`apt-get install apache2-utils python python3`
+# Installation d'un paquet pour Debian 10
+`sudo apt-get install apache2-utils`
+
+# Installation d'Ansible
+Suivre la procédure officielle : https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-ansible-on-debian
 
 # Lancement du script de sécurisation minimale
 ```
