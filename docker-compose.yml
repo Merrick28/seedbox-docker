@@ -4,7 +4,7 @@ services:
 #  TRAEFIK
 ###################################
   traefik:
-    image: traefik:v2
+    image: traefik:v2.4
     container_name: traefik
     restart: unless-stopped
     command:
@@ -153,7 +153,7 @@ services:
 # JellyFin
 #########################################
   jellyfin:
-      image: jellyfin/jellyfin
+      image: linuxserver/jellyfin
       container_name: jellyfin
       restart: unless-stopped
       labels:
@@ -165,8 +165,7 @@ services:
         - "traefik.http.services.jellyfin-service.loadbalancer.server.port=8096"
       volumes:
         - $CONFIG_DIR/jellyfin/config:/config
-        - $CONFIG_DIR/jellyfin/cache:/cache
-        - $DATA_DIR:/home
+        - $DATA_DIR:/data
       environment:
         - PUID=${MYUID}
         - PGID=${MYGID}
@@ -180,6 +179,7 @@ services:
     image: linuxserver/plex:latest
     container_name: plex
     restart: unless-stopped
+    network_mode: host
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.plex-router.entrypoints=websecure"
@@ -194,8 +194,6 @@ services:
       - PUID=${MYUID}
       - PGID=${MYGID}
       - TZ=Europe/Paris
-    networks:
-      - proxy
 #########################################
 # Netdata
 #########################################
