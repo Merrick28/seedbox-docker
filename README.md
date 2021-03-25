@@ -1,6 +1,11 @@
+# Attention
+- Faites des backups/snapshots avant de lancer le script !
+Vous risquez de produire des erreurs de frappes qui feront planter le script...
+
+- La version >= 5 n'a aucun rapport avec la version 2 précedente. Pas d'upgrade simple possible.
 # Présentation du script
 
-Le script est adapté à Debian 10. De trés minimes adaptations peuvent être nécessaires pour fonctionner sous Ubuntu... Testez, retestez ! et proposez une PR !
+Le script est adapté à **Debian 10**. De trés minimes adaptations peuvent être nécessaires pour fonctionner sous Ubuntu... Testez, retestez ! et proposez une PR !
 
 Le script a été pensé par son fondateur @Merrick28 pour être le moins ancré dans le système principal.
 Par conséquent, le seul utilisateur du système est celui que vous allez créer dans les prochaines étapes. Peu importe le nombre de seedbox que vous allez gérer, il n'y aura pas plus d'utilisateurs système !
@@ -9,7 +14,11 @@ Le déploiement des seedbox est géré par du scripting Bash et par Ansible pour
 
 Aucune application n'est installée en dur sur le système. Par conséquent, aucune raison ne devrait vous empecher un passage de Debian 10 à 11 par exemple.
 
-Traefik V2 est utilisé en tant que reverse proxy. DockerCompose V3 est de la partie pour le déploiement des applications.
+Traefik V2.4 est utilisé en tant que reverse proxy. DockerCompose V3.9 est de la partie pour le déploiement des applications.
+La version 5 du script apporte de **la modularité** pour chaque seedbox, en installant uniquement certaines applications pour certaines seedbox.
+De nouvelles applications sont disponibles à l'installation, et ont été testées complétement !
+Certaines applications n'ont pas d'authentification de traefik lors de l'accès car cela empêchait dans certains cas la communication avec d'autres applications.
+L'aspect fonctionnalité a été privilégié.
 
 # Sécurisation
 - Mises à jour automatiques de sécurité tous les jours, et redémarrage automatique à 5h00 si nécessaire pour l'application de la mise à jour.
@@ -17,6 +26,7 @@ Traefik V2 est utilisé en tant que reverse proxy. DockerCompose V3 est de la pa
 - LogWatch, envoi de mail journalier récapitulant les différentes tentatives de connexions infructueuses.
 - Sécurisation des accès SSH par Fail2ban, politique de restriction stricte.
 - Utilisation de RkHunter pour détecter les Rootkits, portes dérobées et exploits au sein du système.
+- (A revoir, laissé en commentaire) Mise en place de règles Iptables
 
 -> Proposez des PR avec encore plus de sécurisation, en particulier au niveau des ports / règles iptables !
 
@@ -82,7 +92,7 @@ Suivre la procédure officielle : https://docs.ansible.com/ansible/latest/instal
 
 # Lancement du script de sécurisation minimale
 ```
-cd seedbox-docker
+cd seedbox-docker/ansible
 sudo ansible-playbook secure.yml -i hosts
 ```
 # Lancement de la première installation
@@ -117,3 +127,22 @@ Toute amélioration est la bienvenue ! Merci de tester au maximum vos modificati
 - Mettre en place des règles iptables avec Ansible
 - Chrooter le SFTP au même niveau que le FTP sans avoir de conséquences sur les applications (ex: nextcloud)
 - ....
+
+# Help :
+
+## Mes enregistrements DNS ne se font pas, Ansible plante !
+La première chose à faire est de vérifier **les deux** fichiers de variables d'environnements.
+Ensuite, il faut vérifier les droits que vous avez attribué au niveau du Token de Cloudflare.
+
+Partie : Jetons API :
+Zone.Réglages Zone, Zone.Zone, Zone.DNS 
+
+## Portainer ne voit pas mes conteneurs
+Si vous êtes trés rapide pour vous connecter, Portainer n'aura pas le temps de se connecter au socket Docker. Pour résoudre le problème, créer votre compte sur Portainer, puis déconnectez vous et reconnectez vous. Il vous proposera ensuite de sélectionner **"Docker - Manage the local Docker environment"**. Cliquez sur connect, et voilà !
+
+# Version applicatives testées et fonctionnelles, dernières en date au (24/03/2021)
+Traefik : 2.4.8
+Portainer : 2.1.1
+Rutorrent : latest
+flood : 4.5.0
+...

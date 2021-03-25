@@ -42,6 +42,7 @@ export PASSWD_FILE=./passwd
 # Adresse mail de cloudflare
 # (pour les certificats cloudflare)
 export CF_API_EMAIL=admin@domain.fr
+# Ici c'est la Global API Key
 export CF_API_KEY=cQhylGXSlZicdlJBuf3zcaGYxIl8gWzTxpxCjdcm
 
 # Dossier utilisateurs

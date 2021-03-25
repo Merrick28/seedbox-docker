@@ -3,7 +3,9 @@ ZONE_DOMAIN: "domain.fr"
 HOSTNAME: "server"
 SERVER_IPV4: "178.176.8.104"
 BASE_URL: "server.domain.fr"
+# Ici c'est l'email du compte Cloudflare
 CF_API_EMAIL: "admin@domain.fr"
+# Ici c'est votre Jeton API
 CF_API_KEY: "pQHylGXSlZicdlLdud3zcaGYxIl9zWzTxpxCkdci"
 EMAIL_FOR_SECURITY: "postmaster@domain.fr"
 CREATE_CNAME_FOR:
