@@ -15,6 +15,7 @@
       - rkhunter
       - logwatch
       - unattended-upgrades
+      - iptables-persistent
   register: apt
 
 - name: Copy Fail2Ban Configuration
@@ -23,7 +24,7 @@
     dest: /etc/fail2ban/jail.local
   register: fail2ban_config
   
-- name: Restart service httpd, in all cases
+- name: Restart service httpd
   service:
     name: fail2ban
     state: restarted
@@ -102,3 +103,146 @@
   file:
     path: /var/cache/logwatch
     state: directory
+
+# - iptables:
+#     chain: INPUT
+#     ctstate: ESTABLISHED,RELATED
+#     jump: ACCEPT
+
+# - name: Allow SSH Connections
+#   iptables:
+#     chain: INPUT
+#     protocol: tcp
+#     destination_port: '22'
+#     ctstate: NEW
+#     jump: ACCEPT
+#     comment: Accept new SSH connections.
+
+# - name: Allow DNS Connections UDP
+#   iptables:
+#     chain: INPUT
+#     protocol: udp
+#     destination_port: '53'
+#     ctstate: NEW
+#     jump: ACCEPT
+#     comment: Accept new DNS connections UDP
+
+# - name: Allow DNS Connections TCP
+#   iptables:
+#     chain: INPUT
+#     protocol: tcp
+#     destination_port: '53'
+#     ctstate: NEW
+#     jump: ACCEPT
+#     comment: Accept new DNS connections TCP
+
+# - name: Accept ICMP (Ping)
+#   iptables:
+#     chain: INPUT
+#     protocol: icmp
+#     jump: ACCEPT
+#     comment: Accept ICMP (Ping)
+  
+# - name: Accept all going outside
+#   iptables:
+#     chain: OUTPUT
+#     jump: ACCEPT
+#     comment: Accept all going outside
+
+# - name: Drop all other
+#   iptables:
+#     chain: INPUT
+#     jump: DROP
+#     comment: Drop all other incomming trafic
+
+# - name: Persist Rules
+#   shell: iptables-save > /etc/iptables/rules.v4
+
+# - iptables:
+#     chain: INPUT
+#     ctstate: ESTABLISHED,RELATED
+#     jump: ACCEPT
+#     ip_version: ipv6
+
+# - name: Allow SSH Connections
+#   iptables:
+#     chain: INPUT
+#     protocol: tcp
+#     destination_port: '22'
+#     ctstate: NEW
+#     jump: ACCEPT
+#     comment: Accept new SSH connections. ipv6
+#     ip_version: ipv6
+
+# - name: Allow HTTP Connections ipv6
+#   iptables:
+#     chain: INPUT
+#     protocol: tcp
+#     destination_port: '80'
+#     ctstate: NEW
+#     jump: ACCEPT
+#     comment: Accept new HTTP connections. ipv6
+#     ip_version: ipv6
+
+# - name: Allow HTTPS Connections TCP ipv6
+#   iptables:
+#     chain: INPUT
+#     protocol: tcp
+#     destination_port: '443'
+#     ctstate: NEW
+#     jump: ACCEPT
+#     comment: Accept new HTTPS connections TCP ipv6
+#     ip_version: ipv6
+
+# - name: Allow DNS Connections UDP ipv6
+#   iptables:
+#     chain: INPUT
+#     protocol: udp
+#     destination_port: '53'
+#     ctstate: NEW
+#     jump: ACCEPT
+#     comment: Accept new DNS connections UDP ipv6
+#     ip_version: ipv6
+
+# - name: Allow DNS Connections TCP ipv6
+#   iptables:
+#     chain: INPUT
+#     protocol: tcp
+#     destination_port: '53'
+#     ctstate: NEW
+#     jump: ACCEPT
+#     comment: Accept new DNS connections TCP ipv6
+#     ip_version: ipv6
+
+# - name: Accept ICMP ipv6-icmp (Ping) ipv6
+#   iptables:
+#     chain: INPUT
+#     protocol: ipv6-icmp
+#     jump: ACCEPT
+#     comment: Accept ICMP (Ping) ipv6
+#     ip_version: ipv6
+
+# - name: Accept ICMP icmpv6 (Ping) ipv6
+#   iptables:
+#     chain: INPUT
+#     protocol: icmpv6
+#     jump: ACCEPT
+#     comment: Accept ICMP (Ping) ipv6
+#     ip_version: ipv6
+
+# - name: Accept all going outside ipv6 
+#   iptables:
+#     chain: OUTPUT
+#     jump: ACCEPT
+#     comment: Accept all going outside ipv6
+#     ip_version: ipv6
+
+# - name: Drop all other ipv6
+#   iptables:
+#     chain: INPUT
+#     jump: DROP
+#     comment: Drop all other incomming trafic ipv6
+#     ip_version: ipv6
+
+# - name: Persist Rules
+#   shell: ip6tables-save > /etc/iptables/rules.v6
