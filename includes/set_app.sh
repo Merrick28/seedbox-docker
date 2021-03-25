@@ -71,6 +71,7 @@ function checkIfRebootNeeded {
         docker-compose $(echo "-f docker-compose/${username}.yml";) down
         docker-compose $(echo "-f docker-compose/${username}.yml";) up -d
         docker stop sftp
+        docker rm sftp
         docker-compose up -d sftp
     else
         echo "Aucun redémarrage, il n'y a pas d'application"
