@@ -4,11 +4,21 @@
 # Domaine
 
 export BASE_URL=server.domain.fr
+export DOMAIN_URL=domain.fr
 
 # URL Administration
-export ADMIN_URL=traefik-server.domain.fr
-export PORTAINER_URL=portainer-server.domain.fr
-export NETDATA_URL=netdata-server.domain.fr
+export ######################################
+# DEFINITION DES VARIABLES
+# ====================================
+# Domaine
+
+export SERVER_BASE_URL=server
+export DOMAIN_URL=domain.fr
+
+# URL Administration
+export TRAEFIK_BASE_URL=traefik
+export PORTAINER_BASE_URL=portainer
+export NETDATA_BASE_URL=netdata
 
 # BASE_URL des applications utilisateur
 export RUTORRENT_BASE_URL=rutorrent
@@ -30,8 +40,8 @@ export FLARESOLVERR_BASE_URL=flaresolverr
 export VPN_BASE_URL=vpn
 
 # BASE_URL des applications multimédias
-export PLEX_URL=plex-domain.fr
-export JELLYFIN_URL=jellyfin-server.domain.fr
+export PLEX_BASE_URL=plex
+export JELLYFIN_BASE_URL=jellyfin
 
 # TimeZone
 export TZ=Paris/Europe
@@ -42,7 +52,7 @@ export PASSWD_FILE=./passwd
 # Adresse mail de cloudflare
 # (pour les certificats cloudflare)
 export CF_API_EMAIL=admin@domain.fr
-# Ici c'est la Global API Key
+# Ici c'est Jeton API
 export CF_API_KEY=cQhylGXSlZicdlJBuf3zcaGYxIl8gWzTxpxCjdcm
 
 # Dossier utilisateurs

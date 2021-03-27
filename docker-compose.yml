@@ -39,13 +39,13 @@ services:
     labels:
       # Api
       - "traefik.enable=true"
-      - "traefik.http.routers.traefik.rule=Host(`${ADMIN_URL}`)"
+      - "traefik.http.routers.traefik.rule=Host(`${TRAEFIK_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}`)"
       - "traefik.http.services.traefik.loadbalancer.server.port=8080"
       - "traefik.http.services.traefik.loadbalancer.server.scheme=http"
       - "traefik.http.routers.traefik.service=api@internal"
       # Wildcard cert
-      - "traefik.http.routers.traefik.tls.domains[0].main=${BASE_URL}"
-      - "traefik.http.routers.traefik.tls.domains[0].sans=*.${BASE_URL}"
+      - "traefik.http.routers.traefik.tls.domains[0].main=${DOMAIN_URL}"
+      - "traefik.http.routers.traefik.tls.domains[0].sans=*.${DOMAIN_URL}"
       - "traefik.http.routers.traefik.tls.certresolver=mydnschallenge"
       # Http -> Https
       - "traefik.http.routers.http-catchall.rule=HostRegexp(`{host:.+}`)"
@@ -81,7 +81,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.portainer.entrypoints=websecure"
-      - "traefik.http.routers.portainer.rule=Host(`${PORTAINER_URL}`) "
+      - "traefik.http.routers.portainer.rule=Host(`${PORTAINER_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}`) "
       - "traefik.http.routers.portainer.service=portainer-service"
       - "traefik.http.routers.portainer.tls=true"
       - "traefik.http.services.portainer-service.loadbalancer.server.port=9000"
@@ -133,8 +133,8 @@ services:
     volumes:
       - ${CONFIG_DIR}/postfix:/etc/opendkim/keys
     environment:
-      - POSTFIX_myhostname=${BASE_URL}
-      - OPENDKIM_DOMAINS=${BASE_URL} ${ADMIN_URL}
+      - POSTFIX_myhostname="${SERVER_BASE_URL}.${DOMAIN_URL}"
+      - OPENDKIM_DOMAINS="${SERVER_BASE_URL}.${DOMAIN_URL}" "${TRAEFIK_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}"
     networks:
       - proxy
 ##########################################
@@ -160,7 +160,7 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.jellyfin-router.entrypoints=websecure"
         - "traefik.http.routers.jellyfin-router.service=jellyfin-service"
-        - "traefik.http.routers.jellyfin-router.rule=Host(`${JELLYFIN_URL}`) "
+        - "traefik.http.routers.jellyfin-router.rule=Host(`${JELLYFIN_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}`) "
         - "traefik.http.routers.jellyfin-router.tls=true"
         - "traefik.http.services.jellyfin-service.loadbalancer.server.port=8096"
       volumes:
@@ -184,7 +184,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.plex-router.entrypoints=websecure"
       - "traefik.http.routers.plex-router.service=plex-service"
-      - "traefik.http.routers.plex-router.rule=Host(`${PLEX_URL}`) "
+      - "traefik.http.routers.plex-router.rule=Host(`${PLEX_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}`) "
       - "traefik.http.routers.plex-router.tls=true"
       - "traefik.http.services.plex-service.loadbalancer.server.port=32400"
     volumes:
@@ -206,7 +206,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.netdata-router.entrypoints=websecure"
       - "traefik.http.routers.netdata-router.service=netdata-service"
-      - "traefik.http.routers.netdata-router.rule=Host(`${NETDATA_URL}`) "
+      - "traefik.http.routers.netdata-router.rule=Host(`${NETDATA_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}`) "
       - "traefik.http.routers.netdata-router.tls=true"
       - "traefik.http.services.netdata-service.loadbalancer.server.port=19999"
       - "traefik.http.routers.netdata-router.middlewares=netdata-auth"

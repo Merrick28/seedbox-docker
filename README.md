@@ -45,6 +45,8 @@ Si vous n'avez pas créer d'espace disque en dur, alors tous les utilisateurs pa
 
 Si vous souhaitez utiliser le système LVM, alors définissez la variable à `LVM_STATUS=yes` en indiquant les différentes autres valeurs pour indiquer au script quel est le nom de votre VG `LVM_VG_NAME` et votre pool `LVM_POOL_NAME` **que vous aurez préalablement crée manuellement !**
 
+
+
 ## DNS & Cloudflare
 
 Ce script est pensé pour être utilisé avec les APIs de Cloudflare uniquement.
@@ -90,6 +92,16 @@ la commande `docker-compose -v` doit vous renvoyer la version de Docker-Compose.
 
 # Installation d'Ansible
 Suivre la procédure officielle : https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-ansible-on-debian
+
+# Si LVM=yes 
+Vous devez créer votre VG et votre Pool.
+
+Exemple Partiel : 
+```
+umount /home
+vgcreate vg_home /dev/sda2
+lvcreate -l 100%FREE --thinpool pool_0_vg_home vg_home
+```
 
 # Lancement du script de sécurisation minimale
 ```
