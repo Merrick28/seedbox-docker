@@ -37,12 +37,13 @@ Copier le fichier ansible/group_vars/all-default.yml en ansible/group_vars/all.y
 
 # LVM & Système de fichiers
 Ce script est pensé pour être utilisé avec un système `LVM ou non`.
-Les deux fonctionnement sans problèmes, mais le LVM est à privilégier car il apporte une plus grande souplesse.
+Les deux fonctionnent sans problème, mais le LVM est à privilégier car il apporte une plus grande souplesse.
+Le LVM utilisé ici est du LVM Thin (avec pool) permettant l'over-provisioning. C'est à vous de le monitorer si vous voulez sur provisionner.
 
 Si vous ne souhaitez pas utiliser le système LVM, il suffit pour cela de mettre `LVM_STATUS=no`. Le script s'occupera alors de créer les répertoires utilisateurs en dessous de `$DATA_DIR`.
 Si vous n'avez pas créer d'espace disque en dur, alors tous les utilisateurs partageront la même capacité de disque.
 
-Si vous souhaitez utiliser le système LVM, alors définissez la variable à `LVM_STATUS=yes` en indiquant les différentes autres valeurs pour indiquer au script quel est le nom de votre VG `LVM_VG_NAME` **que vous aurez préalablement crée manuellement !**
+Si vous souhaitez utiliser le système LVM, alors définissez la variable à `LVM_STATUS=yes` en indiquant les différentes autres valeurs pour indiquer au script quel est le nom de votre VG `LVM_VG_NAME` et votre pool `LVM_POOL_NAME` **que vous aurez préalablement crée manuellement !**
 
 ## DNS & Cloudflare
 

@@ -4,3 +4,4 @@ ansible/group_vars/all.yml
 sftp
 docker-compose/*
 !docker-compose/default
+get_disk_space.sh

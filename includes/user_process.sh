@@ -85,12 +85,10 @@ function createDisk {
     # Lvm Process
     echo "Starting LVM process..."
     checkLVMDiskStatus
-    sudo lvcreate -L ${diskSize}G -n ${username} ${LVM_VG_NAME} -y -Wy -Zy
-    sudo wipefs ${LVM_MAPPER}/${LVM_VG_NAME}-${username}
-    sudo mkfs.ext4 -F ${LVM_MAPPER}/${LVM_VG_NAME}-${username}
-    sudo tune2fs -f -m 0 ${LVM_MAPPER}/${LVM_VG_NAME}-${username}
-    sudo mkdir -p ${DATA_DIR}/${username}
-    sudo echo "${LVM_MAPPER}/${LVM_VG_NAME}-${username}       ${DATA_DIR}/${username}     ext4    defaults        0       2" >> /etc/fstab
+    lvcreate -V ${diskSize}G --thin -n ${username} ${LVM_VG_NAME}/${LVM_POOL_NAME}
+    mkdir -p ${DATA_DIR}/${username}
+    mkfs.ext4 /dev/${LVM_VG_NAME}/${username}
+    sudo echo "/dev/${LVM_VG_NAME}/${username} ${DATA_DIR}/${username}   ext4    defaults,discard,nofail        0       2" >> /etc/fstab
     sudo mount -av
     if [ $? -eq 0 ];then
       echo "The disk has been created successfully for ${username}"

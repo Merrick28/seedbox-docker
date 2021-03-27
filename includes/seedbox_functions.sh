@@ -50,8 +50,8 @@ function deleteConfig {
 function deleteHomeUser {
     if [ "${LVM_STATUS}" = "yes" ]
     then
-        sudo umount -l "${DATA_DIR}/${username}"
-        sudo lvremove -f "${LVM_MAPPER}/${LVM_VG_NAME}-${username}" # possiblement /dev/vghome... et pas /dev/mapper..
+        sudo umount "${DATA_DIR}/${username}"
+        sudo lvremove --yes /dev/${LVM_VG_NAME}/${username}
         sudo sed -i "|${DATA_DIR}/${username}|d" /etc/fstab
         sudo rm -rf ${DATA_DIR}/${username}
         checkLVMDiskStatus

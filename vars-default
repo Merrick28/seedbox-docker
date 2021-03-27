@@ -60,8 +60,6 @@ export CONFIG_DIR=/home/monuser/config
 # Create disk of user automatically ( yes / no )
 # Please read the readme carrefully before choosing the option !!
 export LVM_STATUS=no
-export LVM_VG_NAME=vghome
-
-# You should not touch it...
-export LVM_MAPPER=/dev/mapper
+export LVM_VG_NAME=vg_home
+export LVM_POOL_NAME=pool_0_vg_home
 
