@@ -9,7 +9,7 @@
       - "app.user=rutorrent_{{ user }}"
       - "traefik.enable=true"
       - "traefik.http.routers.rutorrent_{{ user }}-router.entrypoints=websecure"
-      - "traefik.http.routers.rutorrent_{{ user }}-router.rule=Host(`{{ user }}-${RUTORRENT_BASE_URL}-${BASE_URL}`)"
+      - "traefik.http.routers.rutorrent_{{ user }}-router.rule=Host(`{{ user }}-${RUTORRENT_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}`)"
       - "traefik.http.routers.rutorrent_{{ user }}-router.service=rutorrent_{{ user }}-service"
       - "traefik.http.routers.rutorrent_{{ user }}-router.tls=true"
       - "traefik.http.services.rutorrent_{{ user }}-service.loadbalancer.server.port=8080"

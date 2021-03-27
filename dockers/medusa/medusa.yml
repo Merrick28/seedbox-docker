@@ -9,7 +9,7 @@
       - "app.user=medusa_{{ user }}"
       - "traefik.enable=true"
       - "traefik.http.routers.medusa_{{ user }}-router.entrypoints=websecure"
-      - "traefik.http.routers.medusa_{{ user }}-router.rule=Host(`{{ user }}-${MEDUSA_BASE_URL}-${BASE_URL}`)"
+      - "traefik.http.routers.medusa_{{ user }}-router.rule=Host(`{{ user }}-${MEDUSA_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}`)"
       - "traefik.http.routers.medusa_{{ user }}-router.service=medusa_{{ user }}-service"
       - "traefik.http.routers.medusa_{{ user }}-router.tls=true"
       - "traefik.http.services.medusa_{{ user }}-service.loadbalancer.server.port=8081"

@@ -12,7 +12,7 @@
       - "app.user=sonarr_{{ user }}"
       - "traefik.enable=true"
       - "traefik.http.routers.sonarr_{{ user }}-router.entrypoints=websecure"
-      - "traefik.http.routers.sonarr_{{ user }}-router.rule=Host(`{{ user }}-${SONARR_BASE_URL}-${BASE_URL}`)"
+      - "traefik.http.routers.sonarr_{{ user }}-router.rule=Host(`{{ user }}-${SONARR_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}`)"
       - "traefik.http.routers.sonarr_{{ user }}-router.service=sonarr_{{ user }}-service"
       - "traefik.http.routers.sonarr_{{ user }}-router.tls=true"
       - "traefik.http.services.sonarr_{{ user }}-service.loadbalancer.server.port=8989"

@@ -13,7 +13,7 @@ services:
       - "--global.sendAnonymousUsage=true"
       # Logs
       - "--log=true"
-      - "--log.level=DEBUG"
+      - "--log.level=ERROR"
       - "--accessLog=true"
       - "--accessLog.filePath=/log/traefik.log"
       - "--accessLog.bufferingSize=100"
@@ -179,7 +179,6 @@ services:
     image: linuxserver/plex:latest
     container_name: plex
     restart: unless-stopped
-    network_mode: host
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.plex-router.entrypoints=websecure"
@@ -194,6 +193,20 @@ services:
       - PUID=${MYUID}
       - PGID=${MYGID}
       - TZ=Europe/Paris
+      - ADVERTISE_IP="https://${PLEX_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}:443"
+    ports:
+      - 32400:32400/tcp
+      - 32400:32400/udp
+      - 3005:3005/tcp
+      - 8324:8324/tcp
+      - 32469:32469/tcp
+      - 1900:1900/udp
+      - 32410:32410/udp
+      - 32412:32412/udp
+      - 32413:32413/udp
+      - 32414:32414/udp
+    networks:
+      - proxy
 #########################################
 # Netdata
 #########################################
@@ -201,7 +214,7 @@ services:
     image: netdata/netdata
     container_name: netdata
     restart: unless-stopped
-    hostname: ${NETDATA_URL}
+    hostname: "${NETDATA_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.netdata-router.entrypoints=websecure"

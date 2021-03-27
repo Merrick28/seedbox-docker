@@ -11,7 +11,7 @@
       - "app.user=flood_{{ user }}"
       - "traefik.enable=true"
       - "traefik.http.routers.flood_{{ user }}-router.entrypoints=websecure"
-      - "traefik.http.routers.flood_{{ user }}-router.rule=Host(`{{ user }}-${FLOOD_BASE_URL}-${BASE_URL}`)"
+      - "traefik.http.routers.flood_{{ user }}-router.rule=Host(`{{ user }}-${FLOOD_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}`)"
       - "traefik.http.routers.flood_{{ user }}-router.service=flood_{{ user }}-service"
       - "traefik.http.routers.flood_{{ user }}-router.tls=true"
       - "traefik.http.services.flood_{{ user }}-service.loadbalancer.server.port=3001"

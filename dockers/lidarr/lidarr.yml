@@ -12,7 +12,7 @@
       - "app.user=lidarr_{{ user }}"
       - "traefik.enable=true"
       - "traefik.http.routers.lidarr_{{ user }}-router.entrypoints=websecure"
-      - "traefik.http.routers.lidarr_{{ user }}-router.rule=Host(`{{ user }}-${LIDARR_BASE_URL}-${BASE_URL}`)"
+      - "traefik.http.routers.lidarr_{{ user }}-router.rule=Host(`{{ user }}-${LIDARR_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}`)"
       - "traefik.http.routers.lidarr_{{ user }}-router.service=lidarr_{{ user }}-service"
       - "traefik.http.routers.lidarr_{{ user }}-router.tls=true"
       - "traefik.http.services.lidarr_{{ user }}-service.loadbalancer.server.port=8686"

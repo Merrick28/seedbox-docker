@@ -12,7 +12,7 @@
       - "app.user=pyload_{{ user }}"
       - "traefik.enable=true"
       - "traefik.http.routers.pyload_{{ user }}-router.entrypoints=websecure"
-      - "traefik.http.routers.pyload_{{ user }}-router.rule=Host(`{{ user }}-${PYLOAD_BASE_URL}-${BASE_URL}`)"
+      - "traefik.http.routers.pyload_{{ user }}-router.rule=Host(`{{ user }}-${PYLOAD_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}`)"
       - "traefik.http.routers.pyload_{{ user }}-router.service=pyload_{{ user }}-service"
       - "traefik.http.routers.pyload_{{ user }}-router.tls=true"
       - "traefik.http.services.pyload_{{ user }}-service.loadbalancer.server.port=8000"

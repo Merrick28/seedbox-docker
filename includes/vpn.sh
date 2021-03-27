@@ -4,7 +4,7 @@ function vpnInstallation {
     if [ $check_vpn_install -ne 0 ]; then
         cd openvpn || exit 1
         mkdir -p ${CONFIG_DIR}/openvpn/{client-vpn,openvpn-data}
-        docker-compose run --rm openvpn ovpn_genconfig -u udp://${VPN_BASE_URL}-${BASE_URL}
+        docker-compose run --rm openvpn ovpn_genconfig -u udp://${VPN_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}
         if [ $? -eq 0 ]; then
             docker-compose run --rm openvpn ovpn_initpki
             if [ $? -eq 0 ]; then

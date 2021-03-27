@@ -9,7 +9,7 @@
       - "app.user=flaresolverr_{{ user }}"
       - "traefik.enable=true"
       - "traefik.http.routers.flaresolverr_{{ user }}-router.entrypoints=websecure"
-      - "traefik.http.routers.flaresolverr_{{ user }}-router.rule=Host(`{{ user }}-${FLARESOLVERR_BASE_URL}-${BASE_URL}`)"
+      - "traefik.http.routers.flaresolverr_{{ user }}-router.rule=Host(`{{ user }}-${FLARESOLVERR_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}`)"
       - "traefik.http.routers.flaresolverr_{{ user }}-router.service=flaresolverr_{{ user }}-service"
       - "traefik.http.routers.flaresolverr_{{ user }}-router.tls=true"
       - "traefik.http.services.flaresolverr_{{ user }}-service.loadbalancer.server.port=8191"

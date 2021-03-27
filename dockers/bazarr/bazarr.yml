@@ -12,7 +12,7 @@
       - "app.user=bazarr_{{ user }}"
       - "traefik.enable=true"
       - "traefik.http.routers.bazarr_{{ user }}-router.entrypoints=websecure"
-      - "traefik.http.routers.bazarr_{{ user }}-router.rule=Host(`{{ user }}-${BAZARR_BASE_URL}-${BASE_URL}`)"
+      - "traefik.http.routers.bazarr_{{ user }}-router.rule=Host(`{{ user }}-${BAZARR_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}`)"
       - "traefik.http.routers.bazarr_{{ user }}-router.service=bazarr_{{ user }}-service"
       - "traefik.http.routers.bazarr_{{ user }}-router.tls=true"
       - "traefik.http.services.bazarr_{{ user }}-service.loadbalancer.server.port=6767"

@@ -27,7 +27,7 @@
       - "app.user=filerun_{{ user }}"
       - "traefik.enable=true"
       - "traefik.http.routers.filerun_{{ user }}-router.entrypoints=websecure"
-      - "traefik.http.routers.filerun_{{ user }}-router.rule=Host(`{{ user }}-${FILERUN_BASE_URL}-${BASE_URL}`)"
+      - "traefik.http.routers.filerun_{{ user }}-router.rule=Host(`{{ user }}-${FILERUN_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}`)"
       - "traefik.http.routers.filerun_{{ user }}-router.service=filerun_{{ user }}-service"
       - "traefik.http.routers.filerun_{{ user }}-router.tls=true"
       - "traefik.http.services.filerun_{{ user }}-service.loadbalancer.server.port=80"
