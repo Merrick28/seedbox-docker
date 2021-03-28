@@ -1,6 +1,8 @@
 passwd
 vars
 ansible/group_vars/all.yml
+ansible/specific-sdedikool.yml
+ansible/roles/specific
 sftp
 docker-compose/*
 !docker-compose/default

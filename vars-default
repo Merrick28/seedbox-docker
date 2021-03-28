@@ -35,6 +35,7 @@ export FILERUN_BASE_URL=filerun
 export SABNZBD_BASE_URL=sabnzbd
 export PYLOAD_BASE_URL=pyload
 export FLARESOLVERR_BASE_URL=flaresolverr
+export READARR_BASE_URL=readarr
 
 # VPN (OpenVPN Docker)
 export VPN_BASE_URL=vpn

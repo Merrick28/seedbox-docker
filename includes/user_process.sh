@@ -15,6 +15,7 @@ function createDefaultDirectory {
         sudo mkdir -p ${DATA_DIR}/${username}/data/Documentaires
         sudo mkdir -p ${DATA_DIR}/${username}/data/Animes
         sudo mkdir -p ${DATA_DIR}/${username}/data/Musiques
+        sudo mkdir -p ${DATA_DIR}/${username}/data/Livres
 
         sudo mkdir -p ${DATA_DIR}/${username}/config/filebrowser
         sudo touch ${DATA_DIR}/${username}/config/filebrowser/database.db
