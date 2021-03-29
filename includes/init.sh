@@ -70,7 +70,8 @@ function createAdmin {
   generateKeysForSFTP
   docker-compose $(echo "-f docker-compose.yml";) up -d
   echo "Le compte admin a été créé."
-  echo "Vous devez maintenant vous connecter sur https://${PORTAINER_URL}/ et choisir un mot de passe pour sécuriser la partie portainer"
+  echo "Vous devez maintenant vous connecter sur https://${PORTAINER_BASE_URL}/ et choisir un mot de passe pour sécuriser la partie portainer"
+  echo "Vous devez sélectionner la connexion avec Docker, si non proposé, voir Help README."
 
 }
 
