@@ -47,6 +47,9 @@ export JELLYFIN_BASE_URL=jellyfin
 # TimeZone
 export TZ=Paris/Europe
 
+# Debug
+export DEBUG_LEVEL=DEBUG
+
 # Fichier de password
 export PASSWD_FILE=./passwd
 

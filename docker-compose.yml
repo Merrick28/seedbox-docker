@@ -13,7 +13,7 @@ services:
       - "--global.sendAnonymousUsage=true"
       # Logs
       - "--log=true"
-      - "--log.level=ERROR"
+      - "--log.level=${DEBUG_LEVEL}"
       - "--accessLog=true"
       - "--accessLog.filePath=/log/traefik.log"
       - "--accessLog.bufferingSize=100"
