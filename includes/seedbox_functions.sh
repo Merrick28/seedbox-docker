@@ -21,7 +21,7 @@ function actionSeedbox {
 
 function actionAllSeedbox {
     # $1 = stop, start, rm
-    for user in $(ls -al ${DATA_DIR}/data)
+    for user in $(ls -al ${DATA_DIR}/)
     do
         appInstalled=`docker ps -a --format "{{.Names}}" --filter "label=user=${user}"`
         for app in $appInstalled
