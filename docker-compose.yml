@@ -180,13 +180,7 @@ services:
     image: linuxserver/plex:latest
     container_name: plex
     restart: unless-stopped
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.plex-router.entrypoints=websecure"
-      - "traefik.http.routers.plex-router.service=plex-service"
-      - "traefik.http.routers.plex-router.rule=Host(`${PLEX_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}`) "
-      - "traefik.http.routers.plex-router.tls=true"
-      - "traefik.http.services.plex-service.loadbalancer.server.port=32400"
+    network_mode: host
     volumes:
       - $CONFIG_DIR/plex/config:/config
       - $DATA_DIR:/home
@@ -194,20 +188,7 @@ services:
       - PUID=${MYUID}
       - PGID=${MYGID}
       - TZ=Europe/Paris
-      - ADVERTISE_IP="https://${PLEX_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}:443"
-    ports:
-      - 32400:32400/tcp
-      - 32400:32400/udp
-      - 3005:3005/tcp
-      - 8324:8324/tcp
-      - 32469:32469/tcp
-      - 1900:1900/udp
-      - 32410:32410/udp
-      - 32412:32412/udp
-      - 32413:32413/udp
-      - 32414:32414/udp
-    networks:
-      - proxy
+      - VERSION=docker
 #########################################
 # Netdata
 #########################################
