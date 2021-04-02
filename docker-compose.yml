@@ -102,6 +102,8 @@ services:
       - $DATA_DIR:/home/ftpusers
     environment:
       - FTP_MAX_CLIENTS=10
+      - UID=${MYUID}
+      - GID=${APACHEGID}
     ports:
       - "21:21"
       - "30000-30050:30000-30050"
