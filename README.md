@@ -115,6 +115,7 @@ cd seedbox-docker
 ```
 # Ajout d'un utilisateur
 Mettre le diskSize à un nombre aléatoire si non utilisation de LVM ou si l'utilisateur a déja été crée.
+Nextcloud a besoin d'un mot de passe de 6 caractères au minimum !
 
 `./seedbox_system -a --username toto --password totopassword --diskSize 400 --rutorrent yes --flood yes`
 
