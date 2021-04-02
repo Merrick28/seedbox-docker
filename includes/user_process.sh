@@ -84,18 +84,18 @@ function checkLVMDiskStatus {
 function createDisk {
   if [ "${LVM_STATUS}" = "yes" ]; then
     # Lvm Process
-    echo "Starting LVM process..."
+    info "Starting LVM process..."
     checkLVMDiskStatus
-    lvcreate -V ${diskSize}G --thin -n ${username} ${LVM_VG_NAME}/${LVM_POOL_NAME}
-    mkdir -p ${DATA_DIR}/${username}
-    mkfs.ext4 /dev/${LVM_VG_NAME}/${username}
-    sudo echo "/dev/${LVM_VG_NAME}/${username} ${DATA_DIR}/${username}   ext4    defaults,discard,nofail        0       2" >> /etc/fstab
+    sudo lvcreate -V ${diskSize}G --thin -n ${username} ${LVM_VG_NAME}/${LVM_POOL_NAME}
+    sudo mkdir -p ${DATA_DIR}/${username}
+    sudo mkfs.ext4 /dev/${LVM_VG_NAME}/${username}
+    sudo tune2fs -m 0 /dev/${LVM_VG_NAME}/${username}
+    echo "/dev/${LVM_VG_NAME}/${username} ${DATA_DIR}/${username}   ext4    defaults,nofail        0       2" | sudo tee -a /etc/fstab
     sudo mount -av
     if [ $? -eq 0 ];then
-      echo "The disk has been created successfully for ${username}"
+      info "The disk has been created successfully for ${username}"
     else
-      echo "Fatal error ! Check your LVM system ( fstab + mount -av ) . Something went wront !"
-      exit 1
+      error "Fatal error ! Check your LVM system ( fstab + mount -av ) . Something went wront !" 1
     fi
     # End Lvm Process
   fi
