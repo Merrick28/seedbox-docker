@@ -59,9 +59,8 @@ services:
       - "traefik.http.middlewares.traefik-auth.basicauth.users=admin:${passwd_admin}"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - $CONFIG_DIR/traefik:/etc/traefik/acme
-      - $CONFIG_DIR/certs:/certs
-      - $CONFIG_DIR/traefik/traefik.log:/log
+      - $CONFIG_DIR/traefik:/etc/traefik
+      - $CONFIG_DIR/traefik/logs:/log
     ports:
       - "80:80"
       - "443:443"
