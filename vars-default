@@ -41,7 +41,6 @@ export READARR_BASE_URL=readarr
 export VPN_BASE_URL=vpn
 
 # BASE_URL des applications multimédias
-export PLEX_BASE_URL=plex
 export JELLYFIN_BASE_URL=jellyfin
 
 # TimeZone
