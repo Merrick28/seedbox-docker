@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function createDefaultDirectory {
-    if [ ! -d "${DATA_DIR}/${username}/data" ]
+    if [ ! -d "${DATA_DIR}/${username}/data" ] || [ "$1" == "reset" ]
     then    
         sudo mkdir -p ${DATA_DIR}/${username}/config
        
