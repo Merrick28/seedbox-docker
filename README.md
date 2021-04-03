@@ -159,6 +159,9 @@ Ce message apparait je pense à cause du proxy cloudflare, mais en réalité, l'
 Dans accès distant sélectionnez le port 443
 Dans réseau : URL personnalisées pour accéder au serveur = https://plex-server.domain.fr:443
 
+## Mon hebergeur m'indique que PLEX/Jellyfin/... surcharge de log son firewall
+Dans la configuration de PLEX il faut désactiver le GDM (local network discovery) et le DLNA. Sinon le serveur va polluer tout le réseau de l'hébergeur..
+
 # Version applicatives testées et fonctionnelles, dernières en date au (24/03/2021)
 Traefik : 2.4.8
 Portainer : 2.1.1
