@@ -4,9 +4,13 @@ port = ssh, 2222
 
 [sshd-ddos]
 enabled = true
+port = ssh, 2222
+filter = sshd
 
-[ftp]
+[pure-ftpd]
 enabled = true
+port = 21
+filter = pure-ftpd
 maxretry = 5
 
 [default]
