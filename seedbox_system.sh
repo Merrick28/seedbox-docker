@@ -222,6 +222,7 @@ while test "$1" != --; do
                     ;;
                 --delete-config )
                     actionSeedbox stop
+                    actionSeedbox rm
                     deleteConfig
                     createDefaultDirectory "reset"
                     actionDockerComposeSeedbox $username up
