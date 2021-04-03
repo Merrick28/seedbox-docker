@@ -77,3 +77,13 @@ EOC
 function deleteFromSFTP {
     sed -i "/^${username}:/d" ./sftp/users.conf
 }
+
+function actionDockerComposeSeedbox {
+    cd docker-compose
+    if [ "$2" == "up"]; then
+        docker-compose -f $1.yml $2 -d 
+    else
+        docker-compose -f $1.yml $2
+    fi
+    cd ..
+}
