@@ -87,6 +87,8 @@ la commande `docker-compose -v` doit vous renvoyer la version de Docker-Compose.
 # Ajout de notre utilisateur au groupe Docker
 `usermod -aG docker monuser`
 
+Il est recommandé de se déconnecter puis se reconnecter du SSH dans le but d'appliquer le changement de groupe.
+
 # Installation d'un paquet pour Debian 10
 `sudo apt-get install apache2-utils`
 
