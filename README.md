@@ -156,11 +156,6 @@ Zone.Réglages Zone, Zone.Zone, Zone.DNS
 ## Portainer ne voit pas mes conteneurs
 Si vous êtes trés rapide pour vous connecter, Portainer n'aura pas le temps de se connecter au socket Docker. Pour résoudre le problème, créer votre compte sur Portainer, puis déconnectez vous et reconnectez vous. Il vous proposera ensuite de sélectionner **"Docker - Manage the local Docker environment"**. Cliquez sur connect, et voilà !
 
-## Plex indique "Non disponible en dehors de votre réseau local"
-Ce message apparait je pense à cause du proxy cloudflare, mais en réalité, l'accès distant est fonctionnel !
-Dans accès distant sélectionnez le port 443
-Dans réseau : URL personnalisées pour accéder au serveur = https://plex-server.domain.fr:443
-
 ## Mon hebergeur m'indique que PLEX/Jellyfin/... surcharge de log son firewall
 Dans la configuration de PLEX il faut désactiver le GDM (local network discovery) et le DLNA. Sinon le serveur va polluer tout le réseau de l'hébergeur..
 
