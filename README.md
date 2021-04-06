@@ -112,9 +112,6 @@ Il est recommandé de se déconnecter puis se reconnecter du SSH dans le but d'a
 `ansible --version | grep "python version"`
 -> Doit renvoyer au minimum : python version = 3.7.3 (default, Jan 22 2021, 20:04:44) [GCC 8.3.0]
 
-`ansible --version | grep "python version"`
--> Doit renvoyer a minima : python version = 3.7.3 (default, Jan 22 2021, 20:04:44) [GCC 8.3.0]
-
 `ansible --version`
 -> Doit renvoyer a minima : ansible 2.10.7
 
