@@ -3,15 +3,6 @@
 # ====================================
 # Domaine
 
-export BASE_URL=server.domain.fr
-export DOMAIN_URL=domain.fr
-
-# URL Administration
-export ######################################
-# DEFINITION DES VARIABLES
-# ====================================
-# Domaine
-
 export SERVER_BASE_URL=server
 export DOMAIN_URL=domain.fr
 
