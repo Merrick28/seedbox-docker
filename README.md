@@ -106,6 +106,7 @@ Il est recommandé de se déconnecter puis se reconnecter du SSH dans le but d'a
 
 # Installation de paquets pour Debian 10
 `sudo apt-get install apache2-utils python3 python3-pip`
+
 `pip3 install ansible`
 
 `ansible --version | grep "python version"`
