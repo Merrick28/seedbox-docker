@@ -1,14 +1,12 @@
 ---
 CREATE_CNAME_FOR:
-  - name: "portainer-server"
+  - name: "portainer"
     proxied: yes
-  - name: "traefik-server"
+  - name: "traefik"
     proxied: yes
-  - name: "netdata-server"
+  - name: "netdata"
     proxied: yes
-  - name: "ftp-server"
+  - name: "ftp"
     proxied: no
-  - name: "jellyfin-server"
-    proxied: yes
-  - name: "plex-server"
+  - name: "jellyfin"
     proxied: yes

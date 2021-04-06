@@ -15,7 +15,7 @@
   cloudflare_dns:
     zone: "{{ lookup('env','DOMAIN_URL') }}"
     type: CNAME
-    record: "{{ item.name }}"
+    record: "{{ item.name }}-{{ lookup('env','SERVER_BASE_URL') }}"
     value: "{{ lookup('env','SERVER_BASE_URL') }}.{{ lookup('env','DOMAIN_URL') }}"
     account_email: "{{ lookup('env','CF_API_EMAIL') }}"
     account_api_token: "{{ lookup('env','CF_API_KEY') }}"
