@@ -5,7 +5,8 @@
 
 export SERVER_BASE_URL=server
 export DOMAIN_URL=domain.fr
-
+export SERVER_IPV4=178.176.8.104
+export EMAIL_FOR_SECURITY=postmaster@domain.fr
 # URL Administration
 export TRAEFIK_BASE_URL=traefik
 export PORTAINER_BASE_URL=portainer
@@ -46,7 +47,7 @@ export PASSWD_FILE=./passwd
 # Adresse mail de cloudflare
 # (pour les certificats cloudflare)
 export CF_API_EMAIL=admin@domain.fr
-# Ici c'est Jeton API
+# Global API
 export CF_API_KEY=cQhylGXSlZicdlJBuf3zcaGYxIl8gWzTxpxCjdcm
 
 # Dossier utilisateurs
@@ -66,4 +67,3 @@ export CONFIG_DIR=/home/monuser/config
 export LVM_STATUS=no
 export LVM_VG_NAME=vg_home
 export LVM_POOL_NAME=pool_0_vg_home
-

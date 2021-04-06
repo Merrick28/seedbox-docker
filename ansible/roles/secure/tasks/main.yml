@@ -1,8 +1,13 @@
 ---
+
+- name: Load env file
+    shell: source ../../../../vars
+
 - name: Update all packages to their latest version
   apt:
     name: "*"
     state: latest
+    force_apt_get: yes
     update_cache: yes
 
 - name: Installation of security packages
@@ -16,6 +21,7 @@
       - logwatch
       - unattended-upgrades
       - iptables-persistent
+  force_apt_get: yes
   register: apt
 
 - name: Copy Fail2Ban Configuration
@@ -38,7 +44,7 @@
   lineinfile:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: 'Unattended-Upgrade::Mail'
-    line: Unattended-Upgrade::Mail "{{ EMAIL_FOR_SECURITY }}";
+    line: Unattended-Upgrade::Mail "{{ lookup('env','EMAIL_FOR_SECURITY') }}";
 
 - name: Ensure MailOnlyOnError is set
   lineinfile:
@@ -101,7 +107,7 @@
   lineinfile:
     path: /etc/default/rkhunter
     regexp: '^REPORT_EMAIL='
-    line: REPORT_EMAIL="{{ EMAIL_FOR_SECURITY }}"
+    line: REPORT_EMAIL="{{ lookup('env','EMAIL_FOR_SECURITY') }}"
 
 - name: Ensure ALLOW_SSH_ROOT_USER yes
   lineinfile:
@@ -138,7 +144,7 @@
   lineinfile:
     path: /etc/logwatch/conf/logwatch.conf
     regexp: '^MailTo ='
-    line: MailTo = {{ EMAIL_FOR_SECURITY }}
+    line: MailTo = {{ lookup('env','EMAIL_FOR_SECURITY') }}
 
 - name: Ensure Detail is Med
   lineinfile:

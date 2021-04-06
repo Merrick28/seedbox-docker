@@ -1,24 +1,27 @@
 ---
-- name: Create {{ HOSTNAME }}.{{ ZONE_DOMAIN }} A record to point to {{ SERVER_IPV4 }}
+- name: Load env file
+    shell: source ../../../../vars
+    
+- name: Create {{ lookup('env','SERVER_BASE_URL') }}.{{ lookup('env','DOMAIN_URL') }} A record to point to {{ lookup('env','SERVER_IPV4') }}
   cloudflare_dns:
-    zone: "{{ ZONE_DOMAIN }}"
-    record: "{{ HOSTNAME }}"
+    zone: "{{ lookup('env','DOMAIN_URL') }}"
+    record: "{{ lookup('env','SERVER_BASE_URL') }}"
     type: A
-    value: "{{ SERVER_IPV4 }}"
+    value: "{{ lookup('env','SERVER_IPV4') }}"
     proxied: yes
-    account_email: "{{ CF_API_EMAIL }}"
-    account_api_token: "d7c22b4a0cda9e0e6277820457c3fe3b86c0d"
+    account_email: "{{ lookup('env','CF_API_EMAIL') }}"
+    account_api_token: "{{ lookup('env','CF_API_KEY') }}"
   register: record
   when: username is not defined or application is not defined 
 
 - name: Create record for portainer and traefik as CNAME and proxy through Cloudflare's network
   cloudflare_dns:
-    zone: "{{ ZONE_DOMAIN }}"
+    zone: "{{ lookup('env','DOMAIN_URL') }}"
     type: CNAME
     record: "{{ item.name }}"
-    value: "{{ BASE_URL }}"
-    account_email: "{{ CF_API_EMAIL }}"
-    account_api_token: "d7c22b4a0cda9e0e6277820457c3fe3b86c0d"
+    value: "{{ lookup('env','SERVER_BASE_URL') }}.{{ lookup('env','DOMAIN_URL') }}"
+    account_email: "{{ lookup('env','CF_API_EMAIL') }}"
+    account_api_token: "{{ lookup('env','CF_API_KEY') }}"
     state: present
     proxied: "{{ item.proxied }}"
   loop: "{{ CREATE_CNAME_FOR }}"
@@ -26,12 +29,12 @@
 
 - name: Create record for {{ username }} as CNAME and proxy through Cloudflare's network
   cloudflare_dns:
-    zone: "{{ ZONE_DOMAIN }}"
+    zone: "{{ lookup('env','DOMAIN_URL') }}"
     type: CNAME
-    record: "{{ username }}-{{ application }}-{{ HOSTNAME }}"
-    value: "{{ BASE_URL }}"
-    account_email: "{{ CF_API_EMAIL }}"
-    account_api_token: "d7c22b4a0cda9e0e6277820457c3fe3b86c0d"
+    record: "{{ username }}-{{ application }}-{{ lookup('env','SERVER_BASE_URL') }}"
+    value: "{{ lookup('env','SERVER_BASE_URL') }}.{{ lookup('env','DOMAIN_URL') }}"
+    account_email: "{{ lookup('env','CF_API_EMAIL') }}"
+    account_api_token: "{{ lookup('env','CF_API_KEY') }}"
     state: "{{ state }}"
     proxied: yes
   when: username is defined and application is defined and state is defined
