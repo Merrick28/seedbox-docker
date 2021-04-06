@@ -67,13 +67,20 @@ En root :
 `hostnamectl set-hostname serveur.domain.fr`
 
 Dans `/etc/hosts` : `serveur.domain.fr serveur`
+Le fichier doit ressembler à ceci :
+```
+127.0.1.1 server.domain.fr serveur
+127.0.0.1 localhost
+```
 
 Création d'un utilisateur : `adduser monuser`
 
 Dans `/etc/sudoers` : `monuser ALL=(ALL) NOPASSWD:ALL`
 
+Téléchargement depuis Github : 
+`apt install git -y`
+`git clone https://github.com/Merrick28/seedbox-docker`
 `chmod -R 775 seedbox-docker`
-
 `chown -R monuser:monuser seedbox-docker`
 
 # Installation de Docker (en root/sudo)
