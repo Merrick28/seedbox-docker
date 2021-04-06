@@ -142,17 +142,17 @@ cd seedbox-docker
 Mettre le diskSize à un nombre aléatoire si non utilisation de LVM ou si l'utilisateur a déja été crée.
 Nextcloud a besoin d'un mot de passe de 6 caractères au minimum !
 
-`./seedbox_system -a --username toto --password totopassword --diskSize 400 --rutorrent yes --flood yes`
+`./seedbox_system.sh -a --username toto --password totopassword --diskSize 400 --rutorrent yes --flood yes`
 
 # Suppression d'un utilisateur (strictement tout, lvm compris si existant)
 
-`./seedbox_system -d toto --delete-all`
+`./seedbox_system.sh -d toto --delete-all`
 
 # Help
-`./seedbox_system -h`
+`./seedbox_system.sh -h`
 
 # Version
-`./seedbox_system -v`
+`./seedbox_system.sh -v`
 
 # FTP et SFTP
 FTP : Port 21 -> Mode de transfert : Actif
