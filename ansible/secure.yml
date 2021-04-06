@@ -1,7 +1,7 @@
 ---
 - name: Securing system
   hosts: all
-  become_user: root
+  become: true
   vars_files: 
   - group_vars/all.yml
   roles:
