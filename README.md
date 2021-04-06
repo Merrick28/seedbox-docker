@@ -56,6 +56,10 @@ Le proxy Cloudflare est activé lorsqu'il est possible de l'utiliser ( dans la m
 CloudFlare version gratuite ne permet pas la réalisation de domaine du type : `sousdomaine.sousdomaine.domaine.fr` avec l'obtention d'un certificat wildcard.
 Par conséquent, regardez attentivement le vars-default.
 
+# Si vous souhaitez effectuer des tests avant une future installation, il est recommandé d'utiliser le serveur de test de Let's Encrypt pour éviter d'atteindre le nombre maximale de requêtes possibles.
+
+Pour cela ajouter cette ligne : `- "--certificatesResolvers.mydnschallenge.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"` sous `# Certificate Resolver` dans le fichier docker-compose.yml
+
 # Avant de lancer le script
 
 En root :
