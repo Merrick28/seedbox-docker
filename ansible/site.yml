@@ -2,6 +2,8 @@
 - name: Install DNS Routing
   hosts: all
   become: true
+  vars:
+    file_contents: "{{ lookup('env', '../vars') }}"
   vars_files: 
     - group_vars/all.yml
   roles:

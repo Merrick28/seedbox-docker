@@ -1,7 +1,4 @@
----
-- name: Load env file
-    shell: source ../../../../vars
-    
+---   
 - name: Create {{ lookup('env','SERVER_BASE_URL') }}.{{ lookup('env','DOMAIN_URL') }} A record to point to {{ lookup('env','SERVER_IPV4') }}
   cloudflare_dns:
     zone: "{{ lookup('env','DOMAIN_URL') }}"

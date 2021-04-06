@@ -1,8 +1,4 @@
 ---
-
-- name: Load env file
-    shell: source ../../../../vars
-
 - name: Update all packages to their latest version
   apt:
     name: "*"
@@ -12,6 +8,7 @@
 
 - name: Installation of security packages
   apt:
+    force_apt_get: yes
     name: "{{ packages }}"
   vars:
     packages:
@@ -21,7 +18,6 @@
       - logwatch
       - unattended-upgrades
       - iptables-persistent
-  force_apt_get: yes
   register: apt
 
 - name: Copy Fail2Ban Configuration
