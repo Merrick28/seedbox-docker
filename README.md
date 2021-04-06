@@ -78,9 +78,13 @@ Création d'un utilisateur : `adduser monuser`
 Dans `/etc/sudoers` : `monuser ALL=(ALL) NOPASSWD:ALL`
 
 Téléchargement depuis Github : 
+
 `apt install git -y`
+
 `git clone https://github.com/Merrick28/seedbox-docker`
+
 `chmod -R 775 seedbox-docker`
+
 `chown -R monuser:monuser seedbox-docker`
 
 # Installation de Docker (en root/sudo)
