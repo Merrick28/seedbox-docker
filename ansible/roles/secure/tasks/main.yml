@@ -34,20 +34,68 @@
   shell: grep security /etc/apt/sources.list > /etc/apt/security.sources.list
   when: apt.changed
 
+- name: Ensure Mail is set
+  lineinfile:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: 'Unattended-Upgrade::Mail'
+    line: Unattended-Upgrade::Mail "{{ EMAIL_FOR_SECURITY }}";
+
+- name: Ensure MailOnlyOnError is set
+  lineinfile:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: 'Unattended-Upgrade::MailOnlyOnError "false";'
+    line: Unattended-Upgrade::MailOnlyOnError "false";
+
+- name: Ensure Remove-Unused-Kernel-Packages is set
+  lineinfile:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: 'Unattended-Upgrade::Remove-Unused-Kernel-Packages'
+    line: Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
+
+- name: Ensure Remove-New-Unused-Dependencies is set
+  lineinfile:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: 'Unattended-Upgrade::Remove-New-Unused-Dependencies'
+    line: Unattended-Upgrade::Remove-New-Unused-Dependencies "true";
+
+- name: Ensure Remove-Unused-Dependencies is set
+  lineinfile:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: 'Unattended-Upgrade::Remove-Unused-Dependencies'
+    line: Unattended-Upgrade::Remove-Unused-Dependencies "true";
+
+- name: Ensure Remove-Unused-Dependencies is set
+  lineinfile:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: 'Unattended-Upgrade::SyslogEnable'
+    line: Unattended-Upgrade::SyslogEnable "true";
+
+- name: Ensure Update-Package-Lists is set
+  lineinfile:
+    path: /etc/apt/apt.conf.d/20auto-upgrades
+    regexp: 'APT::Periodic::Update-Package-Lists'
+    line: APT::Periodic::Update-Package-Lists "1";
+
+- name: Ensure Unattended-Upgrade is set
+  lineinfile:
+    path: /etc/apt/apt.conf.d/20auto-upgrades
+    regexp: 'APT::Periodic::Unattended-Upgrade'
+    line: APT::Periodic::Unattended-Upgrade "1";
+
 - name: Enables auto clean packages for 7 days
   blockinfile:
     path: /etc/apt/apt.conf.d/20auto-upgrades
+    create: yes
     block: |
+      APT::Periodic::Verbose "2";
       APT::Periodic::AutocleanInterval "7";
       Unattended-Upgrade::Automatic-Reboot "true";
       Unattended-Upgrade::Automatic-Reboot-Time "05:00";
-      Unattended-Upgrade::Mail "{{ EMAIL_FOR_SECURITY }}";
-
 - name: Enable unattended-upgrades service
   systemd:
     name: unattended-upgrades
     enabled: yes
-    state: started
+    state: restarted
 
 - name: Ensure REPORT_EMAIL is set
   lineinfile:
@@ -68,7 +116,6 @@
       SCRIPTWHITELIST=/usr/bin/egrep
       SCRIPTWHITELIST=/usr/bin/fgrep
       SCRIPTWHITELIST=/usr/bin/which
-
 - name: Update rkhunter database
   shell: rkhunter --propupd
 
