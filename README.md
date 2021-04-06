@@ -89,11 +89,18 @@ La commande `docker-compose -v` doit vous renvoyer la version de Docker-Compose.
 
 Il est recommandé de se déconnecter puis se reconnecter du SSH dans le but d'appliquer le changement de groupe.
 
-# Installation d'un paquet pour Debian 10
-`sudo apt-get install apache2-utils`
+# Installation de paquets pour Debian 10
+`sudo apt-get install apache2-utils python3 python3-pip`
+`pip3 install ansible`
 
-# Installation d'Ansible
-Suivre la procédure officielle : https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-ansible-on-debian
+`ansible --version | grep "python version"`
+-> Doit renvoyer au minimum : python version = 3.7.3 (default, Jan 22 2021, 20:04:44) [GCC 8.3.0]
+
+`ansible --version | grep "python version"`
+-> Doit renvoyer a minima : python version = 3.7.3 (default, Jan 22 2021, 20:04:44) [GCC 8.3.0]
+
+`ansible --version`
+-> Doit renvoyer a minima : ansible 2.10.7
 
 # Si LVM=yes 
 Vous devez créer votre VG et votre Pool.
@@ -108,7 +115,7 @@ lvcreate -l 100%FREE --thinpool pool_0_vg_home vg_home
 # Lancement du script de sécurisation minimale
 ```
 cd seedbox-docker/ansible
-sudo ansible-playbook secure.yml -i hosts
+ansible-playbook secure.yml -i hosts
 ```
 # Lancement de la première installation
 ```
