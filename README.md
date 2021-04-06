@@ -82,7 +82,7 @@ La commande `docker -v` doit vous renvoyer la version de Docker.
 
 Suivre la procédure officielle : https://docs.docker.com/compose/install/
 
-la commande `docker-compose -v` doit vous renvoyer la version de Docker-Compose.
+La commande `docker-compose -v` doit vous renvoyer la version de Docker-Compose.
 
 # Ajout de notre utilisateur au groupe Docker
 `usermod -aG docker monuser`
