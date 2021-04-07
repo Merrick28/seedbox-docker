@@ -169,7 +169,7 @@ services:
       environment:
         - PUID=${MYUID}
         - PGID=${MYGID}
-        - TZ=Europe/Paris
+        - TZ=${TZ}
       networks:
         - proxy
 #########################################
@@ -186,7 +186,7 @@ services:
     environment:
       - PUID=${MYUID}
       - PGID=${MYGID}
-      - TZ=Europe/Paris
+      - TZ=${TZ}
       - VERSION=docker
 #########################################
 # Netdata
@@ -219,7 +219,7 @@ services:
       - /sys:/host/sys:ro
       - /etc/os-release:/host/etc/os-release:ro
     environment:
-      - TZ=Europe/Paris
+      - TZ=${TZ}
       - PUID=201
       - PGID=201
     networks:
