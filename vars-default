@@ -36,7 +36,7 @@ export VPN_BASE_URL=vpn
 export JELLYFIN_BASE_URL=jellyfin
 
 # TimeZone
-export TZ=Paris/Europe
+export TZ=Europe/Paris
 
 # Debug
 export DEBUG_LEVEL=DEBUG
