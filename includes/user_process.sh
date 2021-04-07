@@ -68,6 +68,8 @@ function adduser {
     addToSFTP
     createDisk
     getUtils
+    restartSFTP
+    restartFTP
   fi
 }
 
@@ -107,4 +109,15 @@ function modifyTemplateOfUser {
     sed -i "s/{{ user }}/${username}/g" dockers/${appSearched}/${appSearched}.yml.${username}.temp
     sed -i "/# start services/ r dockers/${appSearched}/${appSearched}.yml.${username}.temp" "docker-compose/${username}.yml"
     rm -f dockers/${appSearched}/${appSearched}.yml.${username}.temp    
+}
+
+function restartSFTP {
+    docker stop sftp
+    docker rm sftp
+    docker-compose up -d sftp
+}
+
+function restartFTP {
+    docker stop pure_ftp
+    docker start pure_ftp
 }
