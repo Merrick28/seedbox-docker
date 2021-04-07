@@ -65,9 +65,8 @@ services:
       - "80:80"
       - "443:443"
     environment:
-      - CF_API_EMAIL=${CF_API_EMAIL}
-      - CF_DNS_API_TOKEN=${CF_API_KEY}
-      - CF_ZONE_API_TOKEN=${CF_API_KEY}   
+      - CLOUDFLARE_EMAIL=${CF_API_EMAIL}
+      - CLOUDFLARE_API_KEY=${CF_API_KEY}  
     networks:
       - proxy
 ##########################################
