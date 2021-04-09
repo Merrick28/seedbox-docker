@@ -179,6 +179,9 @@ Si vous êtes trés rapide pour vous connecter, Portainer n'aura pas le temps de
 ## Mon hebergeur m'indique que PLEX/Jellyfin/... surcharge de log son firewall
 Dans la configuration de PLEX il faut désactiver le GDM (local network discovery) et le DLNA. Sinon le serveur va polluer tout le réseau de l'hébergeur..
 
+## Bug Jellyfin
+Un bug provoque une sur utilisation du CPU (environ 8% sans aucune librairie activée), vérifiez que cette option est désactivée : automatic port mapping.
+
 # Version applicatives testées et fonctionnelles, dernières en date au (24/03/2021)
 Traefik : 2.4.8
 Portainer : 2.1.1
