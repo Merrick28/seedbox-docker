@@ -31,14 +31,6 @@ function actionAllSeedbox {
     done
 }
 
-function deleteSeedbox {
-    appInstalled=`docker ps -a --format "{{.Names}}" --filter "label=user=${username}"`
-    for app in $appInstalled
-    do
-        docker rm ${app}
-    done
-}
-
 function deleteData {
     sudo rm -rf ${DATA_DIR}/${username}/data
 }
