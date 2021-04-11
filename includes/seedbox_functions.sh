@@ -43,9 +43,10 @@ function deleteHomeUser {
     if [ "${LVM_STATUS}" = "yes" ]
     then
         sudo umount "${DATA_DIR}/${username}"
-        sudo lvremove --yes /dev/${LVM_VG_NAME}/${username}
         sudo sed -i "/${username} /d" /etc/fstab
         sudo rm -rf ${DATA_DIR}/${username}
+        sleep 2
+        sudo lvremove --yes /dev/${LVM_VG_NAME}/${username} 
         checkLVMDiskStatus
     else
         sudo rm -rf ${DATA_DIR}/${username}
