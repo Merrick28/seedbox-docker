@@ -186,7 +186,6 @@ services:
     image: linuxserver/plex:latest
     container_name: plex
     restart: unless-stopped
-    network_mode: host
     volumes:
       - $CONFIG_DIR/plex/config:/config
       - $DATA_DIR:/home
@@ -195,6 +194,8 @@ services:
       - PGID=${MYGID}
       - TZ=${TZ}
       - VERSION=docker
+    ports:
+      - "32400:32400"
 #########################################
 # Netdata
 #########################################
