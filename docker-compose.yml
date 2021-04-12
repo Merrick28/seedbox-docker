@@ -29,7 +29,7 @@ services:
       - "--providers.docker.exposedByDefault=false"
       - "--providers.docker.network=traefik_proxy"
       - "--providers.docker.swarmMode=false"
-      - "--providers.file.directory=/etc/traefik/rules"
+      - "--providers.file.directory=/etc/traefik/provider"
       - "--providers.file.watch=true"
       # Certificate Resolver
       - "--certificatesresolvers.mydnschallenge.acme.email=${CF_API_EMAIL}"
