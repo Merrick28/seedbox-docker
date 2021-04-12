@@ -176,9 +176,6 @@ Zone.Réglages Zone, Zone.Zone, Zone.DNS
 ## Portainer ne voit pas mes conteneurs
 Si vous êtes trés rapide pour vous connecter, Portainer n'aura pas le temps de se connecter au socket Docker. Pour résoudre le problème, créer votre compte sur Portainer, puis déconnectez vous et reconnectez vous. Il vous proposera ensuite de sélectionner **"Docker - Manage the local Docker environment"**. Cliquez sur connect, et voilà !
 
-## Mon hebergeur m'indique que PLEX/Jellyfin/... surcharge de log son firewall
-Dans la configuration de PLEX il faut désactiver le GDM (local network discovery) et le DLNA. Sinon le serveur va polluer tout le réseau de l'hébergeur..
-
 ## Bug Jellyfin
 Un bug provoque une sur utilisation du CPU (environ 8% sans aucune librairie activée), vérifiez que cette option est désactivée : automatic port mapping.
 
