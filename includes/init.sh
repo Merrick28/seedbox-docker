@@ -9,6 +9,7 @@ function addBaseSystemToDNS {
 function createDefaultDirectoryBase {
   mkdir -p {${DATA_DIR},${CONFIG_DIR}}
   sudo chown root:root ${DATA_DIR}
+  mkdir -p "${CONFIG_DIR}/traefik/provider"
   mkdir ${CONFIG_DIR}/netdata
   mkdir ${CONFIG_DIR}/netdata/{cache,config,lib}
   chmod -R 775 ${CONFIG_DIR}/netdata
