@@ -1,0 +1,49 @@
+# start filerun
+  filerun_db_{{ user }}:
+    image: mariadb:10.1
+    container_name: filerun_db_{{ user }}
+    restart: unless-stopped
+    labels:
+      - "user={{ user }}"
+      - "app=filerun_db"
+      - "app.user=filerun_db_{{ user }}"
+    volumes:
+      - $DATA_DIR/{{ user }}/config/filerun/db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${passwd_{{ user }}}
+      - MYSQL_USER={{ user }}
+      - MYSQL_PASSWORD=${passwd_{{ user }}}
+      - MYSQL_DATABASE={{ user }}
+    networks:
+      - proxy
+
+  filerun_{{ user }}:
+    image: afian/filerun:libreoffice
+    container_name: filerun_{{ user }}
+    restart: unless-stopped
+    labels:
+      - "user={{ user }}"
+      - "app=filerun"
+      - "app.user=filerun_{{ user }}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.filerun_{{ user }}-router.entrypoints=websecure"
+      - "traefik.http.routers.filerun_{{ user }}-router.rule=Host(`{{ user }}-${FILERUN_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}`)"
+      - "traefik.http.routers.filerun_{{ user }}-router.service=filerun_{{ user }}-service"
+      - "traefik.http.routers.filerun_{{ user }}-router.tls=true"
+      - "traefik.http.services.filerun_{{ user }}-service.loadbalancer.server.port=80"
+    volumes:
+      - $DATA_DIR/{{ user }}/data:/user-files
+      - $DATA_DIR/{{ user }}/config/filerun/html:/var/www/html
+    environment:
+      - FR_DB_HOST=filerun_db_{{ user }}
+      - FR_DB_PORT=3306
+      - FR_DB_NAME={{ user }}
+      - FR_DB_USER={{ user }}
+      - FR_DB_PASS=${passwd_{{ user }}}
+      - APACHE_RUN_USER=${USER}
+      - APACHE_RUN_USER_ID=${MYUID}
+      - APACHE_RUN_GROUP=www-data
+      - APACHE_RUN_GROUP_ID=${APACHEGID}
+    networks:
+      - proxy
+# end filerun

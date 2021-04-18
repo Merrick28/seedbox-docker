@@ -1,29 +1,69 @@
 ######################################
 # DEFINITION DES VARIABLES
 # ====================================
-# Url de base
-# Les sites seront accessibles par
-# https://BASE_URL/xxx
-export BASE_URL=seedbox.mondomaine.net
-# URL pour Traefik
-export ADMIN_URL=traefik.mondomaine.net
-# URL pour Portainer
-export PORTAINER_URL=portainer.mondomaine.net
+# Domaine
 
-# URL pour JellyFin
-export JELLYFIN_URL=jellyfin.mondomaine.net
+export SERVER_BASE_URL=server
+export DOMAIN_URL=domain.fr
+export SERVER_IPV4=178.176.8.104
+export EMAIL_FOR_SECURITY=postmaster@domain.fr
+# URL Administration
+export TRAEFIK_BASE_URL=traefik
+export PORTAINER_BASE_URL=portainer
+export NETDATA_BASE_URL=netdata
 
-# URL pour PLEX ( ou accès depuis plex.tv )
-export PLEX_URL=plex.mondomaine.net
+# BASE_URL des applications utilisateur
+export RUTORRENT_BASE_URL=rutorrent
+export MEDUSA_BASE_URL=medusa
+export RADARR_BASE_URL=radarr
+export LIDARR_BASE_URL=lidarr
+export JACKETT_BASE_URL=jackett
+export BAZARR_BASE_URL=bazarr
+export SONARR_BASE_URL=sonarr
+export FLOOD_BASE_URL=flood
+export FILEBROWSER_BASE_URL=filebrowser
+export NEXTCLOUD_BASE_URL=nextcloud
+export FILERUN_BASE_URL=filerun
+export SABNZBD_BASE_URL=sabnzbd
+export PYLOAD_BASE_URL=pyload
+export FLARESOLVERR_BASE_URL=flaresolverr
+export READARR_BASE_URL=readarr
+
+# VPN (OpenVPN Docker)
+export VPN_BASE_URL=vpn
+
+# BASE_URL des applications multimédias
+export JELLYFIN_BASE_URL=jellyfin
+
+# TimeZone
+export TZ=Europe/Paris
+
+# Debug
+export DEBUG_LEVEL=DEBUG
+
 # Fichier de password
 export PASSWD_FILE=./passwd
-# Adresse mail de contact
-# (pour les certificats letsencrypt)
-export MAIL_ADDRESS=me.myself@toto.com
+
+# Adresse mail de cloudflare
+# (pour les certificats cloudflare)
+export CF_API_EMAIL=admin@domain.fr
+# Global API
+export CF_API_KEY=cQhylGXSlZicdlJBuf3zcaGYxIl8gWzTxpxCjdcm
+
+# Dossier utilisateurs
+# Chaque utilisateur aura un dossier sous ce dossier, 
+# il est nécessaire de placer le chemin dans un répertoire détenu par l'utilisateur qui lance le script
+# ex : monuser lance le script, alors on indique le chemin comme suit :
+export DATA_DIR=/home/monuser/data
+
 # Dossier de configuration
 # Va recevoir la configuration de la seedbox
 # Concerne la configuration globale (hors utilisateur)
-export CONFIG_DIR=/home/steph/config-seedbox
-# Dossier utilisateurs
-# Chaque utilisateur aura un dossier sous ce dossier
-export DATA_DIR=/home/steph/data-seedbox
+export CONFIG_DIR=/home/monuser/config
+
+# LVM 
+# Create disk of user automatically ( yes / no )
+# Please read the readme carefully before choosing this option !
+export LVM_STATUS=no
+export LVM_VG_NAME=vg_home
+export LVM_POOL_NAME=pool_0_vg_home

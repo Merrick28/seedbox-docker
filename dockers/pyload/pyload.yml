@@ -1,0 +1,27 @@
+# start pyload
+  pyload_{{ user }}:
+    image: linuxserver/pyload:latest
+    container_name: pyload_{{ user }}
+    restart: unless-stopped
+    volumes:
+      - $DATA_DIR/{{ user }}/data:/downloads
+      - $DATA_DIR/{{ user }}/config/pyload:/config
+    labels:
+      - "user={{ user }}"
+      - "app=pyload"
+      - "app.user=pyload_{{ user }}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.pyload_{{ user }}-router.entrypoints=websecure"
+      - "traefik.http.routers.pyload_{{ user }}-router.rule=Host(`{{ user }}-${PYLOAD_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}`)"
+      - "traefik.http.routers.pyload_{{ user }}-router.service=pyload_{{ user }}-service"
+      - "traefik.http.routers.pyload_{{ user }}-router.tls=true"
+      - "traefik.http.services.pyload_{{ user }}-service.loadbalancer.server.port=8000"
+      - "traefik.http.routers.pyload_{{ user }}-router.middlewares={{ user }}_pyload-auth"
+      - "traefik.http.middlewares.{{ user }}_pyload-auth.basicauth.users={{ user }}:${passwd_{{ user }}}"
+    environment:
+      - PUID=${MYUID}
+      - PGID=${APACHEGID}
+      - TZ=${TZ}
+    networks:
+      - proxy
+# end pyload

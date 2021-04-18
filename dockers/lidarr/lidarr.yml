@@ -1,0 +1,27 @@
+# start lidarr                              
+  lidarr_{{ user }}:
+    image: linuxserver/lidarr:latest
+    container_name: lidarr_{{ user }}
+    restart: unless-stopped
+    volumes:
+      - $DATA_DIR/{{ user }}/data:/data/downloads
+      - $DATA_DIR/{{ user }}/config/lidarr:/config
+    labels:
+      - "user={{ user }}"
+      - "app=lidarr"
+      - "app.user=lidarr_{{ user }}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.lidarr_{{ user }}-router.entrypoints=websecure"
+      - "traefik.http.routers.lidarr_{{ user }}-router.rule=Host(`{{ user }}-${LIDARR_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}`)"
+      - "traefik.http.routers.lidarr_{{ user }}-router.service=lidarr_{{ user }}-service"
+      - "traefik.http.routers.lidarr_{{ user }}-router.tls=true"
+      - "traefik.http.services.lidarr_{{ user }}-service.loadbalancer.server.port=8686"
+      - "traefik.http.routers.lidarr_{{ user }}-router.middlewares={{ user }}_lidarr-auth"
+      - "traefik.http.middlewares.{{ user }}_lidarr-auth.basicauth.users={{ user }}:${passwd_{{ user }}}"
+    environment:
+      - PUID=${MYUID}
+      - PGID=${APACHEGID}
+      - TZ=${TZ}
+    networks:
+      - proxy
+# end lidarr

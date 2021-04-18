@@ -1,0 +1,27 @@
+# start bazarr
+  bazarr_{{ user }}:
+    image: linuxserver/bazarr:latest
+    container_name: bazarr_{{ user }}
+    restart: unless-stopped
+    volumes:
+      - $DATA_DIR/{{ user }}/data:/data/downloads
+      - $DATA_DIR/{{ user }}/config/bazarr:/config
+    labels:
+      - "user={{ user }}"
+      - "app=bazarr"
+      - "app.user=bazarr_{{ user }}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.bazarr_{{ user }}-router.entrypoints=websecure"
+      - "traefik.http.routers.bazarr_{{ user }}-router.rule=Host(`{{ user }}-${BAZARR_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}`)"
+      - "traefik.http.routers.bazarr_{{ user }}-router.service=bazarr_{{ user }}-service"
+      - "traefik.http.routers.bazarr_{{ user }}-router.tls=true"
+      - "traefik.http.services.bazarr_{{ user }}-service.loadbalancer.server.port=6767"
+      - "traefik.http.routers.bazarr_{{ user }}-router.middlewares={{ user }}_bazarr-auth"
+      - "traefik.http.middlewares.{{ user }}_bazarr-auth.basicauth.users={{ user }}:${passwd_{{ user }}}"
+    environment:
+      - PUID=${MYUID}
+      - PGID=${APACHEGID}
+      - TZ=${TZ}
+    networks:
+      - proxy
+# end bazarr

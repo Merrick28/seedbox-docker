@@ -1,149 +1,241 @@
-version: '2'
+version: '3.9'
 services:
 ###################################
 #  TRAEFIK
 ###################################
   traefik:
-    image: traefik:latest
-    command: >
-      --global.checkNewVersion=true
-      --global.checkNewVersion=true
-      --global.sendAnonymousUsage=true
-      --entryPoints.http.address=:80
-      --entryPoints.https.address=:443
-      --entryPoints.traefik.address=:8080
-      --api=true
-      --log=true
-      --log.level=DEBUG
-      --accessLog=true
-      --accessLog.filePath=/log/traefik.log
-      --accessLog.bufferingSize=100
-      --accessLog.filters.statusCodes=400-499
-      --providers.docker=true
-      --providers.docker.endpoint=unix:///var/run/docker.sock
-      --providers.docker.exposedByDefault=false
-      --providers.docker.network=traefik_proxy
-      --providers.docker.swarmMode=false
-      --providers.file.directory=/rules
-      --providers.file.watch=true
-      --certificatesResolvers.letsencrypt.acme.caServer=https://acme-staging-v02.api.letsencrypt.org/directory
-      --certificatesResolvers.letsencrypt.acme.email='${MAIL_ADDRESS}'
-      --certificatesResolvers.letsencrypt.acme.storage=/etc/traefik/acme/acme.json
-      --certificatesresolvers.letsencrypt.acme.tlschallenge=true
+    image: traefik:v2.4
+    container_name: traefik
+    restart: unless-stopped
+    command:
+      # Globals
+      - "--global.checkNewVersion=true"
+      - "--global.sendAnonymousUsage=true"
+      # Logs
+      - "--log=true"
+      - "--log.level=${DEBUG_LEVEL}"
+      - "--accessLog=true"
+      - "--accessLog.filePath=/log/traefik.log"
+      - "--accessLog.bufferingSize=100"
+      - "--accessLog.filters.statusCodes=400-499"
+      # Http & Https      
+      - "--entryPoints.web.address=:80"
+      - "--entryPoints.websecure.address=:443"
+      # Permits the update by user's services
+      - "--api=true"
+      # Docker Configuration      
+      - "--providers.docker=true"
+      - "--providers.docker.endpoint=unix:///var/run/docker.sock"
+      - "--providers.docker.exposedByDefault=false"
+      - "--providers.docker.network=traefik_proxy"
+      - "--providers.docker.swarmMode=false"
+      - "--providers.file.directory=/etc/traefik/provider"
+      - "--providers.file.watch=true"
+      # Certificate Resolver
+      - "--certificatesresolvers.mydnschallenge.acme.email=${CF_API_EMAIL}"
+      - "--certificatesresolvers.mydnschallenge.acme.dnschallenge.provider=cloudflare"
+      - "--certificatesresolvers.mydnschallenge.acme.storage=/etc/traefik/acme.json"
+      - "--serverstransport.insecureskipverify=true"
+    labels:
+      # Api
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`${TRAEFIK_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}`)"
+      - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+      - "traefik.http.services.traefik.loadbalancer.server.scheme=http"
+      - "traefik.http.routers.traefik.service=api@internal"
+      # Wildcard cert
+      - "traefik.http.routers.traefik.tls.domains[0].main=${DOMAIN_URL}"
+      - "traefik.http.routers.traefik.tls.domains[0].sans=*.${DOMAIN_URL}"
+      - "traefik.http.routers.traefik.tls.certresolver=mydnschallenge"
+      # Http -> Https
+      - "traefik.http.routers.http-catchall.rule=HostRegexp(`{host:.+}`)"
+      - "traefik.http.routers.http-catchall.entrypoints=web"
+      - "traefik.http.routers.http-catchall.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.tls=true"
+      # Traefik Authentification
+      - "traefik.http.routers.traefik.middlewares=traefik-auth"
+      - "traefik.http.middlewares.traefik-auth.basicauth.users=admin:${passwd_admin}"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - $CONFIG_DIR/traefik:/etc/traefik
+      - $CONFIG_DIR/traefik/logs:/log
     ports:
       - "80:80"
       - "443:443"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - $CONFIG_DIR/traefik:/etc/traefik/acme
-      - $CONFIG_DIR/certs:/certs
-      - $CONFIG_DIR/traefik.log:/log
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
-      - "traefik.http.routers.http-catchall.entrypoints=http"
-      - "traefik.http.routers.http-catchall.middlewares=redirect-to-https"
-      - "traefik.http.routers.http-catchall.rule=HostRegexp(`{host:.+}`)"
-      - "traefik.http.routers.traefik.service=api@internal"
-      - "traefik.http.routers.traefik.entrypoints=https"
-      - "traefik.http.routers.traefik.rule=Host(`${ADMIN_URL}`)"
-      - "traefik.http.routers.traefik.tls=true"
-      - "traefik.http.routers.traefik.middlewares=traefik-auth"
-      - "traefik.http.middlewares.traefik-auth.basicauth.users=admin:${passwd_admin}"
-    container_name: traefik
+    environment:
+      - CLOUDFLARE_EMAIL=${CF_API_EMAIL}
+      - CLOUDFLARE_API_KEY=${CF_API_KEY}  
+    networks:
+      - proxy
 ##########################################
 # Portainer 
 ##########################################
   portainer:
-    image: portainer/portainer
+    image: portainer/portainer-ce
+    container_name: portainer-ce
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portainer.entrypoints=websecure"
+      - "traefik.http.routers.portainer.rule=Host(`${PORTAINER_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}`) "
+      - "traefik.http.routers.portainer.service=portainer-service"
+      - "traefik.http.routers.portainer.tls=true"
+      - "traefik.http.services.portainer-service.loadbalancer.server.port=9000"
     volumes: 
       - /var/run/docker.sock:/var/run/docker.sock
       - $CONFIG_DIR/portainer:/data
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.portainer.entrypoints=https"
-      - "traefik.http.routers.portainer.rule=Host(`${PORTAINER_URL}`) "
-      - "traefik.http.routers.portainer.service=portainer-svc"
-      - "traefik.http.routers.portainer.tls=true"
-      - "traefik.http.services.portainer-svc.loadbalancer.server.port=9000"
-
+    networks:
+      - proxy
+###########################################
+# FTP
+###########################################
+  pure_ftp:
+    image: stilliard/pure-ftpd:hardened
+    container_name: "pure_ftp"
+    restart: unless-stopped
+    volumes: 
+      - $CONFIG_DIR/pure_ftp:/etc/pure-ftpd/passwd
+      - $DATA_DIR:/home/ftpusers
+    environment:
+      - FTP_MAX_CLIENTS=50
+      - FTP_MAX_CONNECTIONS=10
+      - FTP_PASSIVE_PORTS=30000:30099
+      - PUBLICHOST=${SERVER_IPV4}
+      - UID=${MYUID}
+      - GID=${APACHEGID}
+    ports:
+      - "21:21"
+      - "30000-30099:30000-30099"
+    networks:
+      - proxy
+###########################################
+# SFTP
+###########################################
+  sftp:
+    image: atmoz/sftp
+    container_name: sftp
+    restart: unless-stopped
+    volumes: 
+      - $DATA_DIR:/home
+      - ./sftp/users.conf:/etc/sftp/users.conf
+      - ./sftp/ssh_host_ed25519_key:/etc/ssh/ssh_host_ed25519_key
+      - ./sftp/ssh_host_rsa_key:/etc/ssh/ssh_host_rsa_key
+    ports:
+      - "2222:22"
+    networks:
+      - proxy
+############################################
+# Postfix
+############################################
+  postfix:
+    image: mwader/postfix-relay
+    container_name: "postfix"
+    restart: unless-stopped
+    volumes:
+      - ${CONFIG_DIR}/postfix:/etc/opendkim/keys
+    environment:
+      - POSTFIX_myhostname="${SERVER_BASE_URL}.${DOMAIN_URL}"
+      - OPENDKIM_DOMAINS="${SERVER_BASE_URL}.${DOMAIN_URL}" "${TRAEFIK_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}"
+    networks:
+      - proxy
+##########################################
+# Watchtower
+##########################################
+  watchtower:
+  image: containrrr/watchtower
+  container_name: watchtower
+  restart: unless-stopped
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+  environment:
+    TZ: ${TZ}
+    WATCHTOWER_CLEANUP: "true"
+    WATCHTOWER_NO_STARTUP_MESSAGE: "true"
+    WATCHTOWER_SCHEDULE: "0 0 4 * * *"
+  networks:
+    - proxy
 #########################################
 # JellyFin
 #########################################
   jellyfin:
-      image: jellyfin/jellyfin
+      image: linuxserver/jellyfin
       container_name: jellyfin
       restart: unless-stopped
-      network_mode: "host"
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.jellyfin-router.entrypoints=websecure"
+        - "traefik.http.routers.jellyfin-router.service=jellyfin-service"
+        - "traefik.http.routers.jellyfin-router.rule=Host(`${JELLYFIN_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}`) "
+        - "traefik.http.routers.jellyfin-router.tls=true"
+        - "traefik.http.services.jellyfin-service.loadbalancer.server.port=8096"
+      volumes:
+        - $CONFIG_DIR/jellyfin/config:/config
+        - $DATA_DIR:/data
       environment:
         - PUID=${MYUID}
         - PGID=${MYGID}
-        - TZ=Europe/Paris
-      volumes:
-        - $CONFIG_DIR/jellyfin/config:/config
-        - $CONFIG_DIR/jellyfin/cache:/cache
-        - $DATA_DIR:/home
-      labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.jellyfin-router.entrypoints=https"
-        - "traefik.http.routers.jellyfin-router.service=jellyfin-svc"
-        - "traefik.http.routers.jellyfin-router.rule=Host(`${JELLYFIN_URL}`) "
-        - "traefik.http.routers.jellyfin-router.tls=true"
-        - "traefik.http.services.jellyfin-svc.loadbalancer.server.port=8096"
-
-
+        - TZ=${TZ}
+      networks:
+        - proxy
+#########################################
 # Plex
 #########################################
   plex:
     image: linuxserver/plex:latest
     container_name: plex
     restart: unless-stopped
-    network_mode: host # Permet l'accès depuis l'exterieur
-    environment:
-      - PUID=${MYUID}
-      - PGID=${MYGID}
-      - TZ=Europe/Paris
     volumes:
       - $CONFIG_DIR/plex/config:/config
       - $DATA_DIR:/home
+    environment:
+      - PUID=${MYUID}
+      - PGID=${MYGID}
+      - TZ=${TZ}
+      - VERSION=docker
+    ports:
+      - "32400:32400"
+#########################################
+# Netdata
+#########################################
+  netdata:
+    image: netdata/netdata
+    container_name: netdata
+    restart: unless-stopped
+    hostname: "${NETDATA_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.plex-router.entrypoints=https"
-      - "traefik.http.routers.plex-router.service=plex-svc"
-      - "traefik.http.routers.plex-router.rule=Host(`${PLEX_URL}`) "
-      - "traefik.http.routers.plex-router.tls=true"
-      - "traefik.http.services.plex-svc.loadbalancer.server.port=32400"
- 
-
-###########################################
-# FTP
-###########################################
-  ftp:
-    image: stilliard/pure-ftpd:hardened
-    volumes: 
-      - $CONFIG_DIR/ftp:/etc/pure-ftpd/passwd
-      - $DATA_DIR:/home/ftpusers
-    ports:
-      - "21:21"
-      - "30000-30009:30000-30009"
-    container_name: "pure_ftp_seedbox"
-############################################
-# Postfix
-############################################
-  postfix:
-    image: mwader/postfix-relay
+      - "traefik.http.routers.netdata-router.entrypoints=websecure"
+      - "traefik.http.routers.netdata-router.service=netdata-service"
+      - "traefik.http.routers.netdata-router.rule=Host(`${NETDATA_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}`) "
+      - "traefik.http.routers.netdata-router.tls=true"
+      - "traefik.http.services.netdata-service.loadbalancer.server.port=19999"
+      - "traefik.http.routers.netdata-router.middlewares=netdata-auth"
+      - "traefik.http.middlewares.netdata-auth.basicauth.users=admin:${passwd_admin}"
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - $CONFIG_DIR/netdata/config:/etc/netdata
+      - $CONFIG_DIR/netdata/lib:/var/lib/netdata
+      - $CONFIG_DIR/netdata/cache:/var/cache/netdata
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
     environment:
-      - POSTFIX_myhostname=${BASE_URL}
-      - OPENDKIM_DOMAINS=${BASE_URL} ${ADMIN_URL}
-    volumes:
-      - ${CONFIG_DIR}/postfix:/etc/opendkim/keys
+      - TZ=${TZ}
+      - PUID=201
+      - PGID=201
+    networks:
+      - proxy
 ##########################################
-# Watchtower
+# Networks
 ##########################################
-  watchtower:
-    container_name: watchtower
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    image: containrrr/watchtower
-    command: --cleanup --schedule "0 0 4 * * *"
-
+networks:
+  proxy:
+    external:
+      name: traefik_proxy

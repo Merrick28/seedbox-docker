@@ -1,0 +1,25 @@
+# start sonarr                             
+  sonarr_{{ user }}:
+    image: linuxserver/sonarr:latest
+    container_name: sonarr_{{ user }}
+    restart: unless-stopped
+    volumes:
+      - $DATA_DIR/{{ user }}/data:/data/downloads
+      - $DATA_DIR/{{ user }}/config/sonarr:/config
+    labels:
+      - "user={{ user }}"
+      - "app=sonarr"
+      - "app.user=sonarr_{{ user }}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.sonarr_{{ user }}-router.entrypoints=websecure"
+      - "traefik.http.routers.sonarr_{{ user }}-router.rule=Host(`{{ user }}-${SONARR_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}`)"
+      - "traefik.http.routers.sonarr_{{ user }}-router.service=sonarr_{{ user }}-service"
+      - "traefik.http.routers.sonarr_{{ user }}-router.tls=true"
+      - "traefik.http.services.sonarr_{{ user }}-service.loadbalancer.server.port=8989"
+    environment:
+      - PUID=${MYUID}
+      - PGID=${APACHEGID}
+      - TZ=${TZ}
+    networks:
+      - proxy
+# end sonarr

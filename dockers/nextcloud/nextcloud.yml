@@ -1,0 +1,48 @@
+# start nextcloud
+  nextcloud_db_{{ user }}:
+    image: linuxserver/mariadb
+    container_name: nextcloud_db_{{ user }}
+    restart: unless-stopped
+    labels:
+      - "user={{ user }}"
+      - "app=nextcloud_db"
+      - "app.user=nextcloud_db_{{ user }}"
+    volumes:
+      - $DATA_DIR/{{ user }}/config/nextcloud/db:/config
+    environment:
+      - MYSQL_ROOT_PASSWORD={{ DB_PASSWORD }}
+      - MYSQL_PASSWORD={{ DB_PASSWORD }}
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - TZ=${TZ}
+      - PUID=${MYUID}
+      - PGID=${APACHEGID}
+    networks:
+      - proxy
+
+  nextcloud_{{ user }}:
+    image: linuxserver/nextcloud
+    container_name: nextcloud_{{ user }}
+    restart: unless-stopped
+    labels:
+      - "user={{ user }}"
+      - "app=nextcloud"
+      - "app.user=nextcloud_{{ user }}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.nextcloud_{{ user }}-router.entrypoints=websecure"
+      - "traefik.http.routers.nextcloud_{{ user }}-router.rule=Host(`{{ user }}-${NEXTCLOUD_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}`)"
+      - "traefik.http.routers.nextcloud_{{ user }}-router.service=nextcloud_{{ user }}-service"
+      - "traefik.http.routers.nextcloud_{{ user }}-router.tls=true"
+      - "traefik.http.services.nextcloud_{{ user }}-service.loadbalancer.server.port=443"
+      - "traefik.http.services.nextcloud_{{ user }}-service.loadbalancer.server.scheme=https" # Specifique à nextcloud car le conteneur tourne en https
+    volumes:
+      - $DATA_DIR/{{ user }}/config/nextcloud/html:/config
+      - $DATA_DIR/{{ user }}/nextcloud:/data
+      - $DATA_DIR/{{ user }}/data:/torrents
+    environment:
+      - TZ=${TZ}
+      - PUID=${MYUID}
+      - PGID=${APACHEGID}
+    networks:
+      - proxy
+# end nextcloud

@@ -1,0 +1,24 @@
+# start jackett
+  jackett_{{ user }}:
+    image: linuxserver/jackett:latest
+    container_name: jackett_{{ user }}
+    restart: unless-stopped
+    labels:
+      - "user={{ user }}"
+      - "app=jackett"
+      - "app.user=jackett_{{ user }}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.jackett_{{ user }}-router.entrypoints=websecure"
+      - "traefik.http.routers.jackett_{{ user }}-router.rule=Host(`{{ user }}-${JACKETT_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}`)"
+      - "traefik.http.routers.jackett_{{ user }}-router.service=jackett_{{ user }}-service"
+      - "traefik.http.routers.jackett_{{ user }}-router.tls=true"
+      - "traefik.http.services.jackett_{{ user }}-service.loadbalancer.server.port=9117"
+    volumes:
+      - $DATA_DIR/{{ user }}/config/jackett:/config
+    environment:
+      - PUID=${MYUID}
+      - PGID=${APACHEGID}
+      - TZ=${TZ}
+    networks:
+      - proxy
+# end jackett

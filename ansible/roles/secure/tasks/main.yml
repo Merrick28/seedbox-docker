@@ -1,0 +1,297 @@
+---
+- name: Update all packages to their latest version
+  apt:
+    name: "*"
+    state: latest
+    force_apt_get: yes
+    update_cache: yes
+
+- name: Installation of security packages
+  apt:
+    force_apt_get: yes
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - sendmail
+      - fail2ban
+      - rkhunter
+      - logwatch
+      - unattended-upgrades
+      - iptables-persistent
+  register: apt
+
+- name: Copy Fail2Ban Configuration
+  copy:
+    src: ./roles/secure/files/fail2ban/jail.local
+    dest: /etc/fail2ban/jail.local
+  register: fail2ban_config
+  
+- name: Restart service httpd
+  service:
+    name: fail2ban
+    state: restarted
+  when: fail2ban_config.changed
+
+- name: Copy security sources to new file
+  shell: grep security /etc/apt/sources.list > /etc/apt/security.sources.list
+  when: apt.changed
+
+- name: Ensure Mail is set
+  lineinfile:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: 'Unattended-Upgrade::Mail'
+    line: Unattended-Upgrade::Mail "{{ lookup('env','EMAIL_FOR_SECURITY') }}";
+
+- name: Ensure MailOnlyOnError is set
+  lineinfile:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: 'Unattended-Upgrade::MailOnlyOnError "false";'
+    line: Unattended-Upgrade::MailOnlyOnError "false";
+
+- name: Ensure Remove-Unused-Kernel-Packages is set
+  lineinfile:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: 'Unattended-Upgrade::Remove-Unused-Kernel-Packages'
+    line: Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
+
+- name: Ensure Remove-New-Unused-Dependencies is set
+  lineinfile:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: 'Unattended-Upgrade::Remove-New-Unused-Dependencies'
+    line: Unattended-Upgrade::Remove-New-Unused-Dependencies "true";
+
+- name: Ensure Remove-Unused-Dependencies is set
+  lineinfile:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: 'Unattended-Upgrade::Remove-Unused-Dependencies'
+    line: Unattended-Upgrade::Remove-Unused-Dependencies "true";
+
+- name: Ensure Remove-Unused-Dependencies is set
+  lineinfile:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: 'Unattended-Upgrade::SyslogEnable'
+    line: Unattended-Upgrade::SyslogEnable "true";
+
+- name: Ensure Update-Package-Lists is set
+  lineinfile:
+    path: /etc/apt/apt.conf.d/20auto-upgrades
+    regexp: 'APT::Periodic::Update-Package-Lists'
+    line: APT::Periodic::Update-Package-Lists "1";
+
+- name: Ensure Unattended-Upgrade is set
+  lineinfile:
+    path: /etc/apt/apt.conf.d/20auto-upgrades
+    regexp: 'APT::Periodic::Unattended-Upgrade'
+    line: APT::Periodic::Unattended-Upgrade "1";
+
+- name: Enables auto clean packages for 7 days
+  blockinfile:
+    path: /etc/apt/apt.conf.d/20auto-upgrades
+    create: yes
+    block: |
+      APT::Periodic::Verbose "2";
+      APT::Periodic::AutocleanInterval "7";
+      Unattended-Upgrade::Automatic-Reboot "true";
+      Unattended-Upgrade::Automatic-Reboot-Time "05:00";
+- name: Enable unattended-upgrades service
+  systemd:
+    name: unattended-upgrades
+    enabled: yes
+    state: restarted
+
+- name: Ensure REPORT_EMAIL is set
+  lineinfile:
+    path: /etc/default/rkhunter
+    regexp: '^REPORT_EMAIL='
+    line: REPORT_EMAIL="{{ lookup('env','EMAIL_FOR_SECURITY') }}"
+
+- name: Ensure ALLOW_SSH_ROOT_USER yes
+  lineinfile:
+    path: /etc/rkhunter.conf
+    regexp: '^#ALLOW_SSH_ROOT_USER'
+    line: ALLOW_SSH_ROOT_USER=yes
+
+- name: Disable warning for false positive
+  blockinfile:
+    path: /etc/rkhunter.conf
+    block: |
+      SCRIPTWHITELIST=/usr/bin/egrep
+      SCRIPTWHITELIST=/usr/bin/fgrep
+      SCRIPTWHITELIST=/usr/bin/which
+- name: Update rkhunter database
+  shell: rkhunter --propupd
+
+- name: Check that logwatch.conf exists
+  stat:
+    path: /etc/logwatch/conf/logwatch.conf
+  register: logwatch_state
+
+- name: Create Logwatch configuration
+  shell: cp /usr/share/logwatch/default.conf/logwatch.conf /etc/logwatch/conf/logwatch.conf
+  when: logwatch_state.stat.exists == False
+
+- name: Ensure Format is html
+  lineinfile:
+    path: /etc/logwatch/conf/logwatch.conf
+    regexp: '^Format ='
+    line: Format = html
+
+- name: Ensure MailTo is set
+  lineinfile:
+    path: /etc/logwatch/conf/logwatch.conf
+    regexp: '^MailTo ='
+    line: MailTo = {{ lookup('env','EMAIL_FOR_SECURITY') }}
+
+- name: Ensure Detail is Med
+  lineinfile:
+    path: /etc/logwatch/conf/logwatch.conf
+    regexp: '^Detail ='
+    line: Detail = Med
+
+- name: Ensure temporary folder for logwatch exist
+  file:
+    path: /var/cache/logwatch
+    state: directory
+
+# - iptables:
+#     chain: INPUT
+#     ctstate: ESTABLISHED,RELATED
+#     jump: ACCEPT
+
+# - name: Allow SSH Connections
+#   iptables:
+#     chain: INPUT
+#     protocol: tcp
+#     destination_port: '22'
+#     ctstate: NEW
+#     jump: ACCEPT
+#     comment: Accept new SSH connections.
+
+# - name: Allow DNS Connections UDP
+#   iptables:
+#     chain: INPUT
+#     protocol: udp
+#     destination_port: '53'
+#     ctstate: NEW
+#     jump: ACCEPT
+#     comment: Accept new DNS connections UDP
+
+# - name: Allow DNS Connections TCP
+#   iptables:
+#     chain: INPUT
+#     protocol: tcp
+#     destination_port: '53'
+#     ctstate: NEW
+#     jump: ACCEPT
+#     comment: Accept new DNS connections TCP
+
+# - name: Accept ICMP (Ping)
+#   iptables:
+#     chain: INPUT
+#     protocol: icmp
+#     jump: ACCEPT
+#     comment: Accept ICMP (Ping)
+  
+# - name: Accept all going outside
+#   iptables:
+#     chain: OUTPUT
+#     jump: ACCEPT
+#     comment: Accept all going outside
+
+# - name: Drop all other
+#   iptables:
+#     chain: INPUT
+#     jump: DROP
+#     comment: Drop all other incomming trafic
+
+# - name: Persist Rules
+#   shell: iptables-save > /etc/iptables/rules.v4
+
+# - iptables:
+#     chain: INPUT
+#     ctstate: ESTABLISHED,RELATED
+#     jump: ACCEPT
+#     ip_version: ipv6
+
+# - name: Allow SSH Connections
+#   iptables:
+#     chain: INPUT
+#     protocol: tcp
+#     destination_port: '22'
+#     ctstate: NEW
+#     jump: ACCEPT
+#     comment: Accept new SSH connections. ipv6
+#     ip_version: ipv6
+
+# - name: Allow HTTP Connections ipv6
+#   iptables:
+#     chain: INPUT
+#     protocol: tcp
+#     destination_port: '80'
+#     ctstate: NEW
+#     jump: ACCEPT
+#     comment: Accept new HTTP connections. ipv6
+#     ip_version: ipv6
+
+# - name: Allow HTTPS Connections TCP ipv6
+#   iptables:
+#     chain: INPUT
+#     protocol: tcp
+#     destination_port: '443'
+#     ctstate: NEW
+#     jump: ACCEPT
+#     comment: Accept new HTTPS connections TCP ipv6
+#     ip_version: ipv6
+
+# - name: Allow DNS Connections UDP ipv6
+#   iptables:
+#     chain: INPUT
+#     protocol: udp
+#     destination_port: '53'
+#     ctstate: NEW
+#     jump: ACCEPT
+#     comment: Accept new DNS connections UDP ipv6
+#     ip_version: ipv6
+
+# - name: Allow DNS Connections TCP ipv6
+#   iptables:
+#     chain: INPUT
+#     protocol: tcp
+#     destination_port: '53'
+#     ctstate: NEW
+#     jump: ACCEPT
+#     comment: Accept new DNS connections TCP ipv6
+#     ip_version: ipv6
+
+# - name: Accept ICMP ipv6-icmp (Ping) ipv6
+#   iptables:
+#     chain: INPUT
+#     protocol: ipv6-icmp
+#     jump: ACCEPT
+#     comment: Accept ICMP (Ping) ipv6
+#     ip_version: ipv6
+
+# - name: Accept ICMP icmpv6 (Ping) ipv6
+#   iptables:
+#     chain: INPUT
+#     protocol: icmpv6
+#     jump: ACCEPT
+#     comment: Accept ICMP (Ping) ipv6
+#     ip_version: ipv6
+
+# - name: Accept all going outside ipv6 
+#   iptables:
+#     chain: OUTPUT
+#     jump: ACCEPT
+#     comment: Accept all going outside ipv6
+#     ip_version: ipv6
+
+# - name: Drop all other ipv6
+#   iptables:
+#     chain: INPUT
+#     jump: DROP
+#     comment: Drop all other incomming trafic ipv6
+#     ip_version: ipv6
+
+# - name: Persist Rules
+#   shell: ip6tables-save > /etc/iptables/rules.v6

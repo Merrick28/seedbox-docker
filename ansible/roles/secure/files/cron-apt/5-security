@@ -1,0 +1,1 @@
+full-upgrade -o quiet=1 -y -o APT::Get::Show-Upgraded=true
