@@ -144,41 +144,41 @@ services:
 # Watchtower
 ##########################################
   watchtower:
-  image: containrrr/watchtower
-  container_name: watchtower
-  restart: unless-stopped
-  volumes:
-    - /var/run/docker.sock:/var/run/docker.sock
-  environment:
-    TZ: ${TZ}
-    WATCHTOWER_CLEANUP: "true"
-    WATCHTOWER_NO_STARTUP_MESSAGE: "true"
-    WATCHTOWER_SCHEDULE: "0 0 4 * * *"
-  networks:
-    - proxy
+    image: containrrr/watchtower
+    container_name: watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      TZ: ${TZ}
+      WATCHTOWER_CLEANUP: "true"
+      WATCHTOWER_NO_STARTUP_MESSAGE: "true"
+      WATCHTOWER_SCHEDULE: "0 0 4 * * *"
+    networks:
+      - proxy
 #########################################
 # JellyFin
 #########################################
   jellyfin:
-      image: linuxserver/jellyfin
-      container_name: jellyfin
-      restart: unless-stopped
-      labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.jellyfin-router.entrypoints=websecure"
-        - "traefik.http.routers.jellyfin-router.service=jellyfin-service"
-        - "traefik.http.routers.jellyfin-router.rule=Host(`${JELLYFIN_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}`) "
-        - "traefik.http.routers.jellyfin-router.tls=true"
-        - "traefik.http.services.jellyfin-service.loadbalancer.server.port=8096"
-      volumes:
-        - $CONFIG_DIR/jellyfin/config:/config
-        - $DATA_DIR:/data
-      environment:
-        - PUID=${MYUID}
-        - PGID=${MYGID}
-        - TZ=${TZ}
-      networks:
-        - proxy
+    image: linuxserver/jellyfin
+    container_name: jellyfin
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jellyfin-router.entrypoints=websecure"
+      - "traefik.http.routers.jellyfin-router.service=jellyfin-service"
+      - "traefik.http.routers.jellyfin-router.rule=Host(`${JELLYFIN_BASE_URL}-${SERVER_BASE_URL}.${DOMAIN_URL}`) "
+      - "traefik.http.routers.jellyfin-router.tls=true"
+      - "traefik.http.services.jellyfin-service.loadbalancer.server.port=8096"
+    volumes:
+      - $CONFIG_DIR/jellyfin/config:/config
+      - $DATA_DIR:/data
+    environment:
+      - PUID=${MYUID}
+      - PGID=${MYGID}
+      - TZ=${TZ}
+    networks:
+      - proxy
 #########################################
 # Plex
 #########################################
