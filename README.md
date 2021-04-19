@@ -152,7 +152,8 @@ Nextcloud a besoin d'un mot de passe de 6 caractères au minimum !
 `./seedbox_system.sh -v`
 
 # FTP et SFTP
-FTP : Port 21 -> Mode de transfert : Actif
+FTP : Port 21 -> Mode de transfert : Passif
+
 SFTP : Port 2222
 
 # Améliorer le projet
