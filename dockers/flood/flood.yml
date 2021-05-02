@@ -16,10 +16,10 @@
       - "traefik.http.routers.flood_{{ user }}-router.tls=true"
       - "traefik.http.services.flood_{{ user }}-service.loadbalancer.server.port=3001"
     volumes:
-      - $DATA_DIR/{{ user }}/data:/data/downloads
+      - $DATA_DIR/{{ user }}/data:/data
       - $DATA_DIR/{{ user }}/config/torrent:/config
       - $DATA_DIR/{{ user }}/config/torrent/run/rtorrent:/config/.local/share/rtorrent/
-    command: --port 3001 --allowedpath /data/downloads
+    command: --port 3001 --allowedpath /data
     environment:
       - TZ=${TZ}
       - HOME=/config

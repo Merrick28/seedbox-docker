@@ -30,6 +30,19 @@ function showHelp {
                 [ --pyload ]
                 [ --flaresolverr ]
 
+        [ --stop ]             : Stop seedbox
+                [ --seedbox username ]                      : Stop the specified seedbox
+                [ --all-seedbox ]                           : Stop all seedbox
+
+        [ --start ]            : Start seedbox
+                [ --seedbox username ]                      : Start the specified seedbox
+                [ --all-seedbox ]                           : Start all seedbox
+
+        [ --restart ]          : Restart seedbox
+                [ --seedbox username ]                      : Restart the specified seedbox
+                [ --all-seedbox ]                           : Restart all seedbox
+        [ --recreate ]         : Recreate seedbox
+                [ --seedbox username ]                      : Recreate the specified seedbox
 
         [ -d | --delete username ]           : Delete functions (parameter : Name of user).
                 
