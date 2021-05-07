@@ -3,49 +3,32 @@
 function createDefaultDirectory {
     if [ ! -d "${DATA_DIR}/${username}/data" ] || [ "$1" == "reset" ]
     then    
-        sudo mkdir -p ${DATA_DIR}/${username}/config
-       
-        sudo mkdir -p ${DATA_DIR}/${username}/data
-        sudo mkdir -p ${DATA_DIR}/${username}/nextcloud
-        sudo touch ${DATA_DIR}/${username}/nextcloud/do-not-erase-me-you-brake-nextcloud.txt
+        sudo mkdir -p "${DATA_DIR}/${username}/"{data,nextcloud}
+        sudo touch "${DATA_DIR}/${username}/nextcloud/do-not-erase-me-you-brake-nextcloud.txt"
         
-        sudo mkdir -p ${DATA_DIR}/${username}/data/Films
-        sudo mkdir -p ${DATA_DIR}/${username}/data/SeriesTV
-        sudo mkdir -p ${DATA_DIR}/${username}/data/Logiciels
-        sudo mkdir -p ${DATA_DIR}/${username}/data/Documentaires
-        sudo mkdir -p ${DATA_DIR}/${username}/data/Animes
-        sudo mkdir -p ${DATA_DIR}/${username}/data/Musiques
-        sudo mkdir -p ${DATA_DIR}/${username}/data/Livres
+        sudo mkdir -p "${DATA_DIR}/${username}/data/downloads/"{Films,SeriesTV,Logiciels,Documentaires,Animes,Musiques,Livres}
 
-        sudo mkdir -p ${DATA_DIR}/${username}/config/filebrowser
-        sudo touch ${DATA_DIR}/${username}/config/filebrowser/database.db
+        sudo mkdir -p "${DATA_DIR}/${username}/config/"{filebrowser,filerun,nextcloud,sabnzbd,pyload,flaresolverr}
 
-        sudo mkdir -p ${DATA_DIR}/${username}/config/torrent/custom_plugins
-        sudo mkdir -p ${DATA_DIR}/${username}/config/torrent/.local/share/rtorrent
-        sudo mkdir -p ${DATA_DIR}/${username}/config/torrent/run/rtorrent
+        sudo touch "${DATA_DIR}/${username}/config/filebrowser/database.db"
 
-        sudo mkdir -p ${DATA_DIR}/${username}/config/filerun
-        sudo mkdir -p ${DATA_DIR}/${username}/config/filerun/{html,db}
+        sudo mkdir -p "${DATA_DIR}/${username}/config/torrent/custom_plugins"
+        sudo mkdir -p "${DATA_DIR}/${username}/config/torrent/.local/share/rtorrent"
+        sudo mkdir -p "${DATA_DIR}/${username}/config/torrent/run/rtorrent"
 
-        sudo mkdir -p ${DATA_DIR}/${username}/config/nextcloud
-
-        sudo mkdir -p ${DATA_DIR}/${username}/config/sabnzbd
-
-        sudo mkdir -p ${DATA_DIR}/${username}/config/pyload
-
-        sudo mkdir -p ${DATA_DIR}/${username}/config/flaresolverr
+        sudo mkdir -p "${DATA_DIR}/${username}/config/filerun/"{html,db}  
 
         # Apply Rights
         echo "Applications des droits spécifiques pour un fonctionnement parfait entre nextcloud et la seedbox"
-        sudo chown root:root ${DATA_DIR}/${username}
-        sudo chmod 0770 ${DATA_DIR}/${username}/data
-        sudo chmod -R 775 ${DATA_DIR}/${username}/data/
-        sudo chmod 0770 ${DATA_DIR}/${username}/nextcloud
-        sudo chmod -R 770 ${DATA_DIR}/${username}/nextcloud/
-        sudo chmod -R 775 ${DATA_DIR}/${username}/config
-        sudo chown -R $(whoami):www-data ${DATA_DIR}/${username}/data
-        sudo chown -R $(whoami):www-data ${DATA_DIR}/${username}/nextcloud
-        sudo chown -R $(whoami):www-data ${DATA_DIR}/${username}/config
+        sudo chown root:root "${DATA_DIR}/${username}"
+        sudo chmod 0770 "${DATA_DIR}/${username}/data"
+        sudo chmod -R 775 "${DATA_DIR}/${username}/data"
+        sudo chmod 0770 "${DATA_DIR}/${username}/nextcloud"
+        sudo chmod -R 770 "${DATA_DIR}/${username}/nextcloud"
+        sudo chmod -R 775 "${DATA_DIR}/${username}/config"
+        sudo chown -R $(whoami):www-data "${DATA_DIR}/${username}/data"
+        sudo chown -R $(whoami):www-data "${DATA_DIR}/${username}/nextcloud"
+        sudo chown -R $(whoami):www-data "${DATA_DIR}/${username}/config"
     fi
 }
 

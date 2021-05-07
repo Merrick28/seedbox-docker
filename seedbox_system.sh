@@ -20,7 +20,7 @@ getUtils
 # End Load Password & UID
 
 # Load Menu
-OPTS=`getopt -o a?d:f?h?v?r? --long apps,delete:,help,version,recreate-base-system,stop,start,restart,seedbox:,all-seedbox,delete-data,delete-config,delete-all,first-install,username:,password:,diskSize:,radarr:,lidarr:,sonarr:,medusa:,jackett:,bazarr:,rutorrent:,flood:,filebrowser:,nextcloud:,filerun:,sabnzbd:,pyload:,flaresolverr:,readarr:,vpn,create-client-no-password:,create-client-with-password:,view-all-client,remove-client: -n 'parse-options' -- "$@"`
+OPTS=`getopt -o a?d:f?h?v?r? --long apps,delete:,help,version,recreate-base-system,stop,start,restart,recreate,seedbox:,all-seedbox,delete-data,delete-config,delete-all,first-install,username:,password:,diskSize:,radarr:,lidarr:,sonarr:,medusa:,jackett:,bazarr:,rutorrent:,flood:,filebrowser:,nextcloud:,filerun:,sabnzbd:,pyload:,flaresolverr:,readarr:,vpn,create-client-no-password:,create-client-with-password:,view-all-client,remove-client: -n 'parse-options' -- "$@"`
 if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
 eval set -- "$OPTS"
 
@@ -208,6 +208,22 @@ while test "$1" != --; do
             esac
         done
         ;;
+    --recreate )
+        shift 1
+        while test "$1" != --; do
+            case "$1" in
+                --seedbox )
+                    username="$2"
+                    recreateSeedbox
+                    shift 2
+                    ;;
+                * ) echo "Unexpected option: $1 - this should not happen."
+                    showHelp
+                    break
+                    ;;
+            esac
+        done
+        ;;
     -d | --delete )
         username="$2"
         shift 2
@@ -302,7 +318,7 @@ while test "$1" != --; do
         break
         ;;
     -v | --version )
-        echo "v5.0"
+        echo "v5.1"
         break
         ;;
     -- ) shift;

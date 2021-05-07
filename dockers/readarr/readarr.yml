@@ -4,7 +4,7 @@
     container_name: readarr_{{ user }}
     restart: unless-stopped
     volumes:
-      - $DATA_DIR/{{ user }}/data:/data/downloads
+      - $DATA_DIR/{{ user }}/data:/data
       - $DATA_DIR/{{ user }}/config/readarr:/config
     labels:
       - "user={{ user }}"

@@ -31,6 +31,12 @@ function actionAllSeedbox {
     done
 }
 
+function recreateSeedbox {
+    cd docker-compose || error "Cannot go in docker-compose" 1
+    docker-compose -f "${username}.yml" stop
+    docker-compose -f "${username}.yml" up -d
+}
+
 function deleteData {
     sudo rm -rf ${DATA_DIR}/${username}/data
 }
