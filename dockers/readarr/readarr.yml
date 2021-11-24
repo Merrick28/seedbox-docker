@@ -1,6 +1,6 @@
 # start readarr                             
   readarr_{{ user }}:
-    image: hotio/readarr:pr-dcea7e0
+    image: hotio/readarr:nightly
     container_name: readarr_{{ user }}
     restart: unless-stopped
     volumes:

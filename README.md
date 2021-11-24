@@ -14,7 +14,7 @@ Le déploiement des seedbox est géré par du scripting Bash et par Ansible pour
 
 Aucune application n'est installée en dur sur le système. Par conséquent, aucune raison ne devrait vous empecher un passage de Debian 10 à 11 par exemple.
 
-Traefik V2.4 est utilisé en tant que reverse proxy. DockerCompose V3.9 est de la partie pour le déploiement des applications.
+Traefik V2.5 est utilisé en tant que reverse proxy. DockerCompose V3.9 est de la partie pour le déploiement des applications.
 La version 5 du script apporte de **la modularité** pour chaque seedbox, en installant uniquement certaines applications pour certaines seedbox.
 De nouvelles applications sont disponibles à l'installation, et ont été testées complétement !
 Certaines applications n'ont pas d'authentification de traefik lors de l'accès car cela empêchait dans certains cas la communication avec d'autres applications.
@@ -181,8 +181,8 @@ Si vous êtes trés rapide pour vous connecter, Portainer n'aura pas le temps de
 Un bug provoque une sur utilisation du CPU (environ 8% sans aucune librairie activée), vérifiez que cette option est désactivée : automatic port mapping.
 
 # Version applicatives testées et fonctionnelles, dernières en date au (24/03/2021)
-Traefik : 2.4.8
-Portainer : 2.1.1
+Traefik : 2.5.4
+Portainer : 2.9.3
 Rutorrent : latest
-flood : 4.5.0
+flood : 4.7.0
 ...

@@ -1,6 +1,6 @@
 # start nextcloud
   nextcloud_db_{{ user }}:
-    image: linuxserver/mariadb
+    image: linuxserver/mariadb:10
     container_name: nextcloud_db_{{ user }}
     restart: unless-stopped
     labels:
