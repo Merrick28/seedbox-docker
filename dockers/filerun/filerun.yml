@@ -18,7 +18,7 @@
       - proxy
 
   filerun_{{ user }}:
-    image: afian/filerun:libreoffice
+    image: filerun/filerun
     container_name: filerun_{{ user }}
     restart: unless-stopped
     labels:
